@@ -1,0 +1,14 @@
+{
+  "models": [
+    "qwen2.5vl-7b"
+  ],
+  "datasets": [
+    "test-50"
+  ],
+  "evaluators": [],
+  "scores": {
+    "qwen2.5vl-7b": {
+      "test-50": {}
+    }
+  }
+}

@@ -1,0 +1,97 @@
+[
+  {
+    "id": "001",
+    "video_path": "/media/sda/vlm_datasets/EventHallusion/videos/entire/entire_001.mp4",
+    "prompt": [
+      "Is the man playing with the dog in the video?\nPlease answer yes or no:",
+      "Please describe this video in detail."
+    ],
+    "reference": [
+      "No.",
+      "The white dog was barking wildly at the passing man."
+    ],
+    "duration": "00:02",
+    "source": "pet&animal",
+    "task": "entire",
+    "prediction": [
+      "Yes",
+      "In an industrial area with a corrugated metal wall and scattered debris, a man in a dark jacket and light pants steps back while a white dog approaches him aggressively. The man raises his arms defensively as the dog continues to advance, barking and showing its teeth. The man maintains his defensive posture, moving backward and raising his arms higher as the dog gets closer. The dog lunges slightly, barking more intensely, while the man continues to retreat and raise his arms in a defensive stance."
+    ]
+  },
+  {
+    "id": "002",
+    "video_path": "/media/sda/vlm_datasets/EventHallusion/videos/entire/entire_002.mp4",
+    "prompt": [
+      "Is the filmmaker playing with the bear in the video?\nPlease answer yes or no:",
+      "Please describe this video in detail."
+    ],
+    "reference": [
+      "No.",
+      "The filmmaker captured a bear in the yard, and then the bear broke through the fence and escaped."
+    ],
+    "duration": "00:09",
+    "source": "pet&animal",
+    "task": "entire",
+    "prediction": [
+      "No, the filmmaker is not playing with the bear in the video.",
+      "In a backyard with a wooden fence and lush greenery, a bear picks up a white bucket with its mouth and starts walking towards the left side of the frame. The bear continues moving towards the fence, passing by some plants and a small bench. The bear reaches the fence, stands on its hind legs, and climbs over the top of the fence while still holding the bucket. The bear successfully gets over the fence and lands on the other side, then walks away from the fence."
+    ]
+  },
+  {
+    "id": "003",
+    "video_path": "/media/sda/vlm_datasets/EventHallusion/videos/entire/entire_003.mp4",
+    "prompt": [
+      "Is the bird drinking the coffee in the video?\nPlease answer yes or no:",
+      "Please describe this video in detail."
+    ],
+    "reference": [
+      "No.",
+      "This bird is holding a spoon and using it to stir coffee."
+    ],
+    "duration": "00:09",
+    "source": "pet&animal",
+    "task": "entire",
+    "prediction": [
+      "No, the bird is not drinking the coffee; it is using its beak to hold the spoon and stir the coffee in the cup.",
+      "A hand holding a spoon stirs the contents of a yellow cup filled with a brown liquid, while a green and grey bird stands on the edge of the cup, watching the spoon. The bird then grabs the spoon with its beak and starts stirring the liquid in the cup. A hand appears and holds the cup steady as the bird continues to stir the liquid with the spoon."
+    ]
+  },
+  {
+    "id": "004",
+    "video_path": "/media/sda/vlm_datasets/EventHallusion/videos/entire/entire_004.mp4",
+    "prompt": [
+      "Is the girl sitting on a bicycle and riding it in this video?\nPlease answer yes or no:",
+      "Please describe this video in detail."
+    ],
+    "reference": [
+      "No.",
+      "A girl is walking while lifting a bicycle."
+    ],
+    "duration": "00:06",
+    "source": "vehicle",
+    "task": "entire",
+    "prediction": [
+      "No, the girl is not sitting on a bicycle and riding it in this video. She is carrying the bicycle on her shoulder while walking.",
+      "A woman, dressed in a black jacket, jeans, and a helmet, is seen walking on a paved path at night while carrying a red Trek bicycle on her shoulder. The background features illuminated trees and buildings, with colorful lights and a few people visible in the distance. As she continues walking, the camera angle shifts to show different perspectives of the bicycle, highlighting its design and features. The woman maintains a steady pace, and the surroundings include well-lit areas and some greenery. The video concludes with the woman walking past a building with bright lights and a few more people in the background."
+    ]
+  },
+  {
+    "id": "005",
+    "video_path": "/media/sda/vlm_datasets/EventHallusion/videos/entire/entire_005.mp4",
+    "prompt": [
+      "Is the girl sitting on a bicycle and riding it in this video?\nPlease answer yes or no:",
+      "Please describe this video in detail."
+    ],
+    "reference": [
+      "No.",
+      "A girl is walking while lifting a bicycle."
+    ],
+    "duration": "00:05",
+    "source": "vehicle",
+    "task": "entire",
+    "prediction": [
+      "No, the girl is not sitting on a bicycle and riding it; she is lifting the bicycle and walking while carrying it.",
+      "A woman wearing a white helmet, beige long-sleeve shirt, and blue cycling shorts is seen on a street with a white road bike. She begins to lift the bike from the ground, holding it by the frame and handlebars. The woman continues to lift the bike higher, preparing to carry it. She starts walking forward while carrying the bike, moving past a sidewalk and a fence with greenery in the background. The woman maintains her grip on the bike as she walks further along the street, with the bike now fully lifted off the ground."
+    ]
+  }
+]

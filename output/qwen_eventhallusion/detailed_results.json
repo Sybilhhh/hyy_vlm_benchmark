@@ -1,0 +1,7 @@
+{
+  "qwen2.5vl-7b": {
+    "event-hallusion": {
+      "event-hallusion": "EvaluationResult(score=1.0, details={'task_results': {'entire': {'yn': {'accuracy': 1.0, 'not matching rate': 0.0, 'total questions': 5, 'correct': 5}, 'desc': {'accuracy': 0.2, 'not matching rate': 0.0, 'total videos': 5, 'correct': 1}}}, 'overall_metrics': {'overall_score_qa': 1.0, 'overall_score_description': 0.2}, 'summary_table': '+---------+---------------+------------+--------------+-----------------+--------------+----------------+---------------------+-----------------------+\\n|  Task   |  QA Accuracy  |  QA Total  |  QA Correct  |  Desc Accuracy  |  Desc Total  |  Desc Correct  |  QA Not Match Rate  |  Desc Not Match Rate  |\\n+=========+===============+============+==============+=================+==============+================+=====================+=======================+\\n| entire  |       1       |     5      |      5       |       0.2       |      5       |       1        |       0.0000        |        0.0000         |\\n+---------+---------------+------------+--------------+-----------------+--------------+----------------+---------------------+-----------------------+\\n| OVERALL |       1       |     -      |      -       |       0.2       |      -       |       -        |          -          |           -           |\\n+---------+---------------+------------+--------------+-----------------+--------------+----------------+---------------------+-----------------------+'}, method='etbench', ground_truth_required=True)"
+    }
+  }
+}

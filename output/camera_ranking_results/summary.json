@@ -1,0 +1,18 @@
+{
+  "task": "test-50-camera-lighting",
+  "model_a": "modela",
+  "model_b": "modelb",
+  "elapsed_time": 179.4110324382782,
+  "avg_per_comparison": 3.588220648765564,
+  "throughput": 16.721379723580117,
+  "wins_a": 43,
+  "wins_b": 4,
+  "ties": 0,
+  "errors": 3,
+  "win_rate_a": 0.9148936170212766,
+  "win_rate_b": 0.0851063829787234,
+  "tie_rate": 0.0,
+  "concurrent": 5,
+  "video_frames": 8,
+  "video_aware": true
+}

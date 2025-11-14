@@ -1,0 +1,452 @@
+[
+  {
+    "id": "movie_animation_1",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_animation/1.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_animation",
+    "task": "video_captioning",
+    "prediction": "[Content filtered by Azure OpenAI policy - video: 1.mp4]"
+  },
+  {
+    "id": "movie_animation_10",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_animation/10.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_animation",
+    "task": "video_captioning",
+    "prediction": "The camera setup in this video utilizes a shallow depth of field, focusing primarily on the character in the foreground while keeping the background slightly blurred. This technique emphasizes the subject and creates a sense of intimacy and emotional focus. The framing is tight, with the character positioned slightly off-center, adhering to the rule of thirds for a visually balanced composition. The camera angle is at eye level, maintaining a natural perspective and enhancing the connection between the viewer and the character.\n\nThe lighting setup is soft and diffused, creating a moody and subdued atmosphere. The primary light source appears to be coming from the window in the background, simulating natural light. This light casts a cool blue tone across the scene, suggesting nighttime or a dimly lit interior. Additional soft lighting highlights the character's face and hair, ensuring visibility while maintaining the overall low-key lighting style. The use of shadows and gradients adds depth and texture to the environment, complementing the emotional tone of the scene."
+  },
+  {
+    "id": "movie_animation_2",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_animation/2.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_animation",
+    "task": "video_captioning",
+    "prediction": "The camera and lighting setup in this video appears to be designed to create a dramatic and industrial atmosphere. \n\n**Camera Setup:**\n- The camera angles are dynamic, with a mix of medium shots and wide shots to emphasize the scale of the environment and the interaction between the characters.\n- The camera movement is smooth, likely achieved using a dolly or a stabilizer, allowing the viewer to follow the characters as they move through the space.\n- Depth of field is utilized to keep the focus on the characters while slightly blurring the background, ensuring the environment remains visually impactful without overwhelming the scene.\n\n**Lighting Setup:**\n- The lighting is predominantly motivated by the environment, with large industrial windows providing a strong backlight. This creates a silhouette effect and adds depth to the scene.\n- Soft, diffused light from the windows illuminates the space, while additional practical lights (such as the glowing green elements on the machinery) add texture and color contrast.\n- Fill lighting is used subtly to ensure the characters are visible without overpowering the natural light sources.\n- Shadows and darker areas are maintained to enhance the gritty, industrial feel of the setting, creating a high-contrast look that emphasizes the mood and atmosphere.\n\nOverall, the setup effectively combines environmental lighting and camera movement to immerse the viewer in the scene while maintaining focus on the characters and their surroundings."
+  },
+  {
+    "id": "movie_animation_3",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_animation/3.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_animation",
+    "task": "video_captioning",
+    "prediction": "The video appears to be a scene from an animated film, likely created using computer-generated imagery (CGI). As such, the camera and lighting setup are virtual and designed within a 3D animation software rather than physical equipment. Here's a breakdown of the setup:\n\n### **Camera Setup:**\n1. **Camera Angle and Framing:**\n   - The camera is positioned at a medium-wide angle, capturing the characters and their immediate environment while showcasing the expansive cityscape in the background.\n   - The framing emphasizes the characters in the foreground while maintaining depth with the city skyline in the background.\n\n2. **Camera Movement:**\n   - The camera remains relatively static, focusing on the characters' interactions. Subtle movements or shifts may occur to follow the action or emphasize specific moments.\n\n3. **Depth of Field:**\n   - The foreground characters are sharply in focus, while the background cityscape is slightly blurred, creating a sense of depth and directing attention to the characters.\n\n4. **Perspective:**\n   - The perspective is slightly elevated, giving the viewer a sense of height and emphasizing the precarious setting on a construction site.\n\n---\n\n### **Lighting Setup:**\n1. **Key Light:**\n   - A strong key light simulates sunlight, casting shadows and illuminating the characters and environment. The light source appears to be positioned high and slightly to the left, mimicking the sun's position in a clear daytime sky.\n\n2. **Fill Light:**\n   - A softer fill light is used to reduce harsh shadows and ensure the characters' details are visible. This light balances the overall brightness without overpowering the key light.\n\n3. **Background Lighting:**\n   - The cityscape in the background is brightly lit, with soft lighting to simulate atmospheric perspective. The lighting helps maintain the vibrant and cheerful tone of the scene.\n\n4. **Color Temperature:**\n   - The lighting is warm and bright, consistent with a sunny day. The blue sky contrasts with the warm tones of the characters and the construction site elements, creating a visually appealing balance.\n\n5. **Shadows:**\n   - Shadows are crisp and well-defined, particularly on the characters and the construction site elements, reinforcing the sunny outdoor setting.\n\n---\n\n### **Additional Notes:**\n- The lighting and camera setup are designed to enhance the vibrant and playful tone of the scene, typical of animated films.\n- The use of bright colors and dynamic lighting contributes to the visual appeal and helps convey the mood and environment effectively.\n\nThis virtual setup demonstrates the careful planning and execution required in CGI animation to achieve a realistic yet stylized look."
+  },
+  {
+    "id": "movie_animation_4",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_animation/4.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_animation",
+    "task": "video_captioning",
+    "prediction": "The images provided are from an animated film, likely hand-drawn or digitally created, rather than live-action footage. However, I can describe the visual elements and how they simulate camera and lighting setups in animation.\n\n### Camera Setup:\n1. **Framing and Composition**:  \n   - The camera is positioned at a low angle, close to the ground, to match the perspective of the small characters (mouse and cat). This creates a sense of scale and emphasizes the tension between the characters.\n   - The framing is tight, focusing on the interaction between the characters and the objects (bowl, key), ensuring the viewer's attention remains on the action.\n   - The camera remains static in most shots, with the characters moving within the frame. This is typical in animation to reduce complexity in animating backgrounds.\n\n2. **Perspective**:  \n   - The use of depth is evident, with the background walls and floorboards receding into the distance. This creates a three-dimensional feel despite being a 2D animation.\n   - The characters are positioned dynamically within the frame, with the mouse often in the foreground and the cat occupying more of the midground or background, emphasizing the size difference.\n\n### Lighting Setup:\n1. **Key Light**:  \n   - A strong key light source is simulated coming from the right side of the frame, casting shadows on the floor and walls. This light creates a dramatic effect, highlighting the tension and danger in the scene.\n   - The key light is soft but directional, creating gradients of light and shadow on the characters and environment.\n\n2. **Fill Light**:  \n   - A subtle fill light is used to ensure the characters' details are visible, especially in darker areas. This prevents the scene from becoming overly shadowed while maintaining the dramatic atmosphere.\n\n3. **Background Lighting**:  \n   - The background is dimly lit, with darker tones to create a sense of confinement and unease. The lighting on the walls and floor is uneven, adding texture and depth to the environment.\n\n4. **Character Lighting**:  \n   - The mouse and cat are lit to stand out from the background. The mouse's bright orange outfit contrasts with the muted tones of the environment, while the cat's darker fur blends more with the shadows, emphasizing its menacing presence.\n\n### Color Palette:\n- The color palette is muted and cool, with shades of blue and green dominating the background. This enhances the feeling of a cold, dark, and enclosed space.\n- The characters' colors (orange for the mouse, black and brown for the cat) are warmer and more saturated, drawing attention to them and their actions.\n\n### Overall Effect:\nThe simulated camera and lighting setup in this animated sequence effectively create tension and drama. The low-angle perspective, dynamic framing, and dramatic lighting emphasize the conflict between the characters while maintaining visual clarity and focus on the action."
+  },
+  {
+    "id": "movie_animation_5",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_animation/5.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_animation",
+    "task": "video_captioning",
+    "prediction": "The images provided are from an animated film, so the camera and lighting setup would be virtual rather than physical. Here's a description of the setup based on the visuals:\n\n### Camera Setup:\n1. **Framing and Composition**: The camera is positioned at a medium close-up to close-up range, focusing on the animated character (a cat). The shots are centered on the character's face and upper body, ensuring the expressions and actions are clearly visible.\n2. **Movement**: The camera remains static in most frames, with the character's movements creating the dynamic action. In the wider shot, the camera pulls back slightly to show the character's full body and interaction with the object (a jar).\n3. **Perspective**: The perspective is straightforward, with the camera at eye level to the character, creating an intimate and engaging view.\n\n### Lighting Setup:\n1. **Ambient Lighting**: The background is softly lit with a cool, bluish-green tone, suggesting a dimly lit environment, possibly indoors or at night. This creates a subdued and mysterious atmosphere.\n2. **Key Lighting**: The character is illuminated with a soft, diffused light that highlights the face and body, ensuring the details of the expressions and features are visible. The lighting is consistent with the ambient tone, maintaining the overall mood.\n3. **Practical Lighting**: In one frame, a candle is introduced as a light source. The candlelight adds a warm, yellowish glow to the character's face, creating contrast with the cooler background lighting. This practical light source enhances the realism and draws attention to the interaction.\n4. **Shadows**: Shadows are minimal and soft, consistent with the diffused lighting style typical of animated films. This ensures the focus remains on the character without harsh distractions.\n\n### Animation Considerations:\nSince this is an animated sequence, the lighting and camera effects are digitally created. The animators have carefully designed the lighting to complement the character's expressions and actions, using color and intensity to guide the viewer's attention and evoke emotion.\n\nThis setup effectively conveys the character's personality and the comedic tone of the scene while maintaining visual clarity and engagement."
+  },
+  {
+    "id": "movie_animation_6",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_animation/6.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_animation",
+    "task": "video_captioning",
+    "prediction": "The images provided appear to be from an animated film, so the camera and lighting setup would be virtual rather than physical. Here's a description of the setup based on the visuals:\n\n### **Camera Setup:**\n1. **Framing and Composition:**\n   - The camera is positioned to focus on the door and the birds, maintaining a medium close-up to highlight the interaction between the characters and the environment.\n   - The perspective shifts slightly to follow the movement of the birds, creating a dynamic sense of motion.\n   - The camera angle is slightly tilted upward in the final frame to emphasize the window and the birds flying away, giving a sense of escape and freedom.\n\n2. **Movement:**\n   - The camera remains mostly static in the earlier frames, allowing the focus to stay on the birds and the door handle.\n   - In the final frame, the camera pans or tilts upward to follow the birds as they fly toward the window.\n\n### **Lighting Setup:**\n1. **Key Light:**\n   - A strong directional light source is used to simulate sunlight or moonlight coming through the window. This creates a distinct shadow on the wooden door, adding depth and realism to the scene.\n   - The key light highlights the metallic door handle, emphasizing its reflective surface and golden color.\n\n2. **Fill Light:**\n   - A softer fill light is used to reduce harsh shadows on the birds and the door, ensuring the characters remain visible and well-lit.\n   - The fill light is subtle, maintaining the dim, moody atmosphere of the scene.\n\n3. **Background Lighting:**\n   - The background is kept darker, with minimal lighting to create contrast and focus attention on the birds and the door handle.\n   - The window in the final frame is brightly lit, serving as a natural light source and drawing the viewer's eye toward the escape route.\n\n4. **Color Palette:**\n   - The lighting uses cool tones (blues and greens) to create a subdued, nighttime ambiance.\n   - Warm tones are introduced through the golden door handle and the birds' colorful accents, providing visual contrast and vibrancy.\n\n### **Overall Atmosphere:**\nThe lighting and camera work together to create a sense of tension and focus on the birds' actions. The shadows and muted colors evoke a mysterious, slightly dramatic mood, while the brighter window in the final frame symbolizes hope and freedom."
+  },
+  {
+    "id": "movie_animation_7",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_animation/7.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_animation",
+    "task": "video_captioning",
+    "prediction": "The images provided are from an animated film, which means the camera and lighting setup are digitally created rather than physically arranged. However, we can analyze the visual composition and lighting design as if it were a live-action production.\n\n### Camera Setup:\n1. **Framing and Composition**:  \n   - The camera is positioned at a low angle, close to the ground, to emphasize the dog as the central subject. This perspective creates a sense of intimacy and focuses on the character's expressions and interactions with the birds.\n   - The background elements, such as the stone wall, wooden door, and broom, are carefully placed to frame the scene and provide depth.\n\n2. **Camera Movement**:  \n   - The sequence appears static, with the camera maintaining a fixed position while the animated characters move within the frame. This allows the viewer to focus on the interactions between the dog and the birds without distraction.\n\n3. **Depth of Field**:  \n   - The background is slightly blurred, creating a subtle separation between the foreground (dog and birds) and the environment. This technique mimics a shallow depth of field, drawing attention to the main subjects.\n\n### Lighting Setup:\n1. **Natural Lighting Simulation**:  \n   - The lighting is designed to mimic daylight, with soft, diffused light coming from the left side of the frame. This suggests an outdoor setting during the daytime.\n   - Shadows are cast on the ground and walls, adding realism and depth to the scene.\n\n2. **Key Light**:  \n   - The key light is positioned to the left, illuminating the dog and birds. This light source creates soft highlights on the characters and ensures they stand out against the background.\n\n3. **Fill Light**:  \n   - A fill light is used to reduce harsh shadows, particularly on the dog's face and body. This ensures the details of the character are visible without creating a flat appearance.\n\n4. **Background Lighting**:  \n   - The background is lit with a softer, more diffused light to maintain focus on the foreground subjects while still providing enough detail to establish the setting.\n\n5. **Color Palette**:  \n   - Warm tones dominate the scene, with earthy browns, soft blues, and muted greens. This creates a cozy, rustic atmosphere that complements the rural setting.\n\n### Summary:\nThe camera setup emphasizes the dog as the central character, using a low-angle, static shot to focus on its interactions with the birds. The lighting design simulates natural daylight, with a key light and fill light creating a balanced and realistic look. The background lighting and color palette enhance the scene's depth and mood, contributing to the overall storytelling."
+  },
+  {
+    "id": "movie_animation_8",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_animation/8.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_animation",
+    "task": "video_captioning",
+    "prediction": "The camera and lighting setup in this video appears to be meticulously designed to enhance the stylized, dramatic atmosphere of the scene. The camera angles are dynamic, often framing the characters in close-ups or medium shots to emphasize their exaggerated features and expressions. The depth of field is shallow, keeping the focus on the characters while the background remains slightly blurred, adding a sense of depth and dimension to the composition.\n\nThe lighting is highly theatrical, with a strong emphasis on colored lighting to create mood and tone. The predominant use of purple and magenta hues in the background lighting gives the scene a surreal and eerie quality. These colors are complemented by accents of blue and red, which highlight specific areas, such as the cabinet and the edges of the door. The characters are lit with warm, directional lighting that creates dramatic shadows and emphasizes their textures and contours, particularly the intricate details of their faces and costumes. The lighting also helps to separate the characters from the background, ensuring they remain the focal point of the scene.\n\nOverall, the combination of camera framing and lighting creates a visually striking and immersive environment, perfectly suited to the stylized nature of the production."
+  },
+  {
+    "id": "movie_animation_9",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_animation/9.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_animation",
+    "task": "video_captioning",
+    "prediction": "[Content filtered by Azure OpenAI policy - video: 9.mp4]"
+  },
+  {
+    "id": "movie_live_action_201",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_live_action/201.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_live_action",
+    "task": "video_captioning",
+    "prediction": "The camera setup in this video appears to use a shallow depth of field, focusing on the subjects in the foreground while blurring the background. This technique isolates the characters from their environment, emphasizing their interaction. The framing alternates between medium close-ups and over-the-shoulder shots, creating a sense of intimacy and dialogue between the characters. The camera movement is minimal, suggesting a static or tripod-mounted setup.\n\nThe lighting setup is low-key, with soft, diffused lighting that creates a naturalistic and moody atmosphere. The scene appears to be shot in an outdoor urban environment, with ambient light from streetlights and possibly practical sources like car headlights contributing to the overall illumination. The lighting highlights the subjects subtly, avoiding harsh shadows, and maintains a consistent tone throughout the sequence. The use of warm tones from the yellow taxi in the background contrasts with cooler tones in other parts of the frame, adding depth and visual interest."
+  },
+  {
+    "id": "movie_live_action_202",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_live_action/202.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_live_action",
+    "task": "video_captioning",
+    "prediction": "The camera and lighting setup in this scene appears to be designed to create a warm, intimate atmosphere against a cold, outdoor backdrop. \n\n**Camera Setup:**\n- The shots are medium close-ups, focusing on the upper body of the subjects, with a shallow depth of field. This isolates the subjects from the background, keeping the focus on them while the background remains softly blurred.\n- The camera angle is slightly eye-level, maintaining a natural perspective and enhancing the emotional connection with the subjects.\n- The framing includes elements of the environment, such as snow-covered trees and distant candlelight, to establish the setting and mood.\n\n**Lighting Setup:**\n- The primary light source seems to be a warm, soft light, likely mimicking firelight or candlelight. This creates a natural, flickering glow on the subjects, emphasizing warmth and intimacy.\n- The background is dimly lit, with cool tones to contrast the warm foreground lighting. This suggests the use of blue gels or natural moonlight simulation to enhance the cold, outdoor environment.\n- Practical lighting, such as the visible candles in the background, adds depth and realism to the scene while contributing to the overall warm ambiance.\n- Shadows are soft and diffuse, indicating the use of bounce lighting or diffusion materials to soften the firelight effect.\n- The lighting is directional, with the warm light source positioned slightly below or in front of the subjects, creating a natural interplay of light and shadow on their faces and clothing.\n\nThis setup effectively conveys a sense of warmth and intimacy amidst a cold, wintry setting, enhancing the emotional tone of the scene."
+  },
+  {
+    "id": "movie_live_action_203",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_live_action/203.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_live_action",
+    "task": "video_captioning",
+    "prediction": "The camera and lighting setup in this video appears to be designed to capture a dynamic and immersive scene in a historical or period setting. Here's a detailed analysis:\n\n### **Camera Setup:**\n1. **Wide-angle lens:**  \n   The scene is shot with a wide-angle lens, allowing for a broad view of the cobblestone street, the architectural details of the buildings, and the movement of the characters. This choice emphasizes the depth and scale of the location.\n\n2. **Static camera position:**  \n   The camera remains stationary, capturing the action as characters move through the frame. This approach allows the viewer to focus on the environment and the movement of the characters without distraction.\n\n3. **Framing:**  \n   The composition is balanced, with the staircase on the left and the archway leading to the street on the right. The framing guides the viewer's eye through the scene, emphasizing the depth of the location and the movement of the characters.\n\n4. **Depth of field:**  \n   The image has a deep depth of field, keeping both the foreground and background in focus. This ensures that the architectural details and the characters are clearly visible, contributing to the immersive quality of the scene.\n\n### **Lighting Setup:**\n1. **Natural lighting:**  \n   The scene appears to be shot outdoors, utilizing natural daylight. The lighting is soft and diffused, suggesting an overcast day or the use of diffusion materials to minimize harsh shadows and create an even illumination.\n\n2. **Directional light:**  \n   The light source seems to be coming from the right side of the frame, possibly mimicking sunlight. This creates subtle highlights and shadows on the stone walls and cobblestone street, adding texture and depth to the scene.\n\n3. **Ambient light:**  \n   The lighting is consistent throughout the frame, with no noticeable artificial light sources. This suggests that the filmmakers relied on the natural ambient light of the location, possibly enhanced with reflectors or bounce boards to fill in shadows.\n\n4. **Color grading:**  \n   The color palette is muted and warm, with earthy tones that complement the historical setting. This could have been achieved in post-production through color grading to enhance the period feel of the scene.\n\n### **Overall Impression:**\nThe camera and lighting setup effectively capture the historical architecture and the movement of the characters, creating a sense of realism and immersion. The use of natural light and wide-angle framing highlights the location's details while maintaining a focus on the action. The setup is simple yet effective, emphasizing the narrative and visual storytelling."
+  },
+  {
+    "id": "movie_live_action_204",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_live_action/204.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_live_action",
+    "task": "video_captioning",
+    "prediction": "The camera and lighting setup in this video appears to be designed to create a naturalistic and atmospheric look, emphasizing the urban and suburban environments.\n\n### Camera Setup:\n1. **Lens and Framing**:  \n   - The shots use a wide-angle lens to capture the environment and provide a sense of scale, particularly in the city scenes with Big Ben and the surrounding architecture.  \n   - The framing often places the car in the center of the composition, drawing attention to it as the focal point while maintaining the background details.  \n   - The shots through the wrought iron gate use a shallow depth of field to create a sense of separation and mystery, with the gate in soft focus and the house in sharper focus.\n\n2. **Camera Movement**:  \n   - The camera appears to be mounted on a tracking rig or vehicle for the moving shots, ensuring smooth motion as the car drives through the city streets.  \n   - Static shots are used for the suburban scenes, with the camera positioned to frame the house and driveway through the gate, creating a voyeuristic perspective.\n\n3. **Angle and Perspective**:  \n   - Low angles are used in the city scenes to emphasize the grandeur of the architecture and the dominance of the car in the frame.  \n   - The suburban shots use a slightly elevated angle, looking down through the gate, which adds a sense of distance and observation.\n\n### Lighting Setup:\n1. **Natural Light**:  \n   - The lighting in the city scenes relies heavily on natural light, likely shot during overcast conditions or twilight to create a soft, diffused look.  \n   - The overcast sky provides even lighting, reducing harsh shadows and creating a muted, somber tone.\n\n2. **Practical Lighting**:  \n   - Streetlights, vehicle headlights, and building lights are used as practical sources to enhance the realism of the urban environment.  \n   - The headlights of the car and the red bus are particularly prominent, adding dynamic points of light within the frame.\n\n3. **Suburban Lighting**:  \n   - The suburban shots use natural daylight, with the soft light creating a calm and subdued atmosphere.  \n   - The shadows and highlights are balanced, suggesting the use of minimal artificial lighting or reflectors to maintain the natural look.\n\nOverall, the camera and lighting setup effectively convey the mood and setting, with the urban scenes feeling busy and atmospheric, while the suburban shots feel quiet and introspective."
+  },
+  {
+    "id": "movie_live_action_205",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_live_action/205.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_live_action",
+    "task": "video_captioning",
+    "prediction": "The camera setup in this scene appears to use a medium shot to capture the interaction between the characters on the porch. The framing is designed to emphasize the environment, including the porch's architectural details and the rural background, while maintaining focus on the characters. The camera angle is slightly off-center, creating a natural perspective that aligns with the conversational tone of the scene. As the scene progresses, the camera adjusts to closer shots to highlight specific interactions and emotions between the characters.\n\nThe lighting setup is primarily naturalistic, with soft, diffused daylight illuminating the scene. The porch roof provides shade, creating a balanced contrast between the shaded foreground and the brighter background. The lighting is even and consistent, avoiding harsh shadows, which helps maintain the warm and inviting atmosphere of the setting. The use of practical lighting elements, such as the porch lamp, adds authenticity to the environment without overpowering the natural light."
+  },
+  {
+    "id": "movie_live_action_206",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_live_action/206.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_live_action",
+    "task": "video_captioning",
+    "prediction": "The camera setup in this video appears to utilize a combination of medium and close-up shots to focus on the subject and their actions, while also incorporating the surrounding environment, such as the prison bars and walls, to establish the setting. The framing is tight, emphasizing the confined space and creating an intimate atmosphere. The camera angle shifts between eye-level and slightly above, providing a sense of perspective and emphasizing the character's physical position within the scene.\n\nThe lighting setup is low-key, with a dim and moody ambiance that complements the prison setting. The light source seems to be coming from outside the cell, possibly mimicking natural light from a window or artificial light from a hallway. This creates a contrast between the illuminated areas and the shadows, adding depth and texture to the scene. The lighting highlights the magazine and the subject's hands, drawing attention to the action and the object of focus, while the background remains darker, emphasizing the isolation and confinement of the environment."
+  },
+  {
+    "id": "movie_live_action_207",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_live_action/207.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_live_action",
+    "task": "video_captioning",
+    "prediction": "The camera setup in this scene appears to use a medium close-up framing, focusing on the interaction between the two characters while maintaining a shallow depth of field. This technique isolates the subjects from the background, which is slightly blurred, emphasizing the characters and their emotions. The camera angle alternates between over-the-shoulder shots to capture the perspective of each character, creating a sense of intimacy and connection.\n\nThe lighting setup is soft and even, suggesting the use of diffused light sources to minimize harsh shadows. The lighting highlights the subjects' hair and clothing, creating a natural and balanced look. The background lighting is slightly dimmer, ensuring the focus remains on the characters while maintaining the ambiance of the setting, which appears to be a public space with natural or simulated daylight."
+  },
+  {
+    "id": "movie_live_action_208",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_live_action/208.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_live_action",
+    "task": "video_captioning",
+    "prediction": "The camera and lighting setup in this scene creates a dramatic and theatrical atmosphere. The camera is positioned at a low angle, tracking the movement of the central figure as they walk down the aisle toward the stage. This dynamic framing emphasizes the grandeur of the setting and the importance of the character's actions. The depth of field is carefully managed to keep the audience in focus while drawing attention to the stage in the background.\n\nThe lighting is designed to mimic a stage performance, with a strong spotlight illuminating the performer suspended on the stage. The spotlight creates a sharp contrast between the bright subject and the darker surroundings, emphasizing the theatricality of the moment. Additional ambient lighting is used to softly illuminate the audience, ensuring their presence is felt without detracting from the focus on the stage. The use of warm tones and shadows adds depth and texture to the ornate theater setting, enhancing the period atmosphere."
+  },
+  {
+    "id": "movie_live_action_209",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_live_action/209.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_live_action",
+    "task": "video_captioning",
+    "prediction": "The camera and lighting setup in this video appears to be designed to create a tense and immersive atmosphere, likely for a military or tactical scene. Here's the breakdown:\n\n### Camera Setup:\n1. **Handheld or Stabilized Rig**: The camera movement is dynamic and follows the action closely, suggesting the use of a handheld camera or a stabilized rig like a Steadicam or gimbal. This creates a sense of urgency and realism.\n2. **Close Framing**: The camera is positioned close to the subjects, emphasizing their gear and movements. This tight framing enhances the feeling of being in the middle of the action.\n3. **Night Vision/Heads-Up Display Overlay**: The greenish tint and digital overlays suggest the use of post-production effects to simulate a heads-up display or night vision, adding a tactical and futuristic element to the visuals.\n\n### Lighting Setup:\n1. **Low-Key Lighting**: The scene is predominantly dark, with minimal lighting to create a moody and suspenseful environment. This is typical for indoor tactical sequences.\n2. **Directional Light Sources**: Light appears to be coming from windows or openings, creating natural-looking highlights and shadows. This mimics the lighting conditions of a dimly lit, abandoned building.\n3. **Soft Diffused Light**: The light filtering through the windows is diffused, likely using softboxes or diffusion material to avoid harsh shadows and maintain a natural look.\n4. **Practical Lights**: The glow from equipment, such as helmet-mounted devices or weapon-mounted lights, adds realism and serves as additional light sources within the scene.\n\nThis setup effectively conveys the tension and realism of a tactical operation in a confined, dimly lit space."
+  },
+  {
+    "id": "movie_live_action_210",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/movie_live_action/210.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "movie_live_action",
+    "task": "video_captioning",
+    "prediction": "The camera setup in this video appears to utilize a shallow depth of field, achieved through a wide aperture lens, to focus on specific subjects while blurring the background. This technique creates a sense of isolation and draws attention to the foreground elements, such as the trees and the characters. The framing is tight and intimate, with the camera positioned close to the subjects, often using natural obstructions like trees to create a layered composition and enhance the sense of concealment or tension.\n\nThe lighting setup is predominantly natural, relying on the ambient light of the snowy forest environment. The overcast conditions provide soft, diffused lighting, eliminating harsh shadows and creating a muted, cold atmosphere. The snow-covered ground acts as a natural reflector, bouncing light upward and subtly illuminating the lower portions of the scene. The overall lighting complements the somber and suspenseful tone of the setting."
+  },
+  {
+    "id": "shorts_401",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/shorts/401.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "shorts",
+    "task": "video_captioning",
+    "prediction": "The video appears to be shot in a controlled environment with a simple setup. The camera is positioned at a fixed angle, likely handheld or mounted on a tripod, capturing the subjects at eye level. The framing is consistent, focusing on the subjects' full body movements.\n\nThe lighting setup is natural or mimics natural light, as there are no visible harsh shadows or dramatic contrasts. The even illumination suggests the use of soft, diffused lighting, possibly from ambient daylight or overhead lights. The background, a corrugated metal wall, is evenly lit, ensuring the subjects stand out without distractions. The overall setup prioritizes clarity and simplicity, suitable for capturing dynamic movements."
+  },
+  {
+    "id": "shorts_402",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/shorts/402.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "shorts",
+    "task": "video_captioning",
+    "prediction": "The camera setup in this video appears to use a close-up framing, focusing on the subject's upper body and neck area. The angle is slightly tilted downward, suggesting the camera is positioned above the subject, capturing a direct and intimate perspective. The depth of field is shallow, keeping the subject in focus while softly blurring the background.\n\nThe lighting setup is soft and evenly distributed, minimizing harsh shadows and creating a flattering effect on the subject's skin. The light source seems to be diffused, possibly using a softbox or similar equipment, positioned slightly above and in front of the subject. This ensures the illumination is consistent across the subject's features, enhancing the overall visual quality. The background lighting is subdued, allowing the subject to remain the focal point of the frame."
+  },
+  {
+    "id": "shorts_403",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/shorts/403.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "shorts",
+    "task": "video_captioning",
+    "prediction": "The video appears to be shot outdoors in a natural setting, utilizing available sunlight as the primary light source. The lighting is soft and diffused due to the surrounding trees, which create dappled shadows on the subject and the pathway. The sunlight provides a natural backlight and highlights the subject's hair and clothing, adding depth to the scene.\n\nThe camera setup seems to involve handheld or stabilized equipment, as the movement is smooth but dynamic, following the subject as they walk and interact with the environment. The framing is consistent, keeping the subject centered while showcasing the surrounding scenery. The depth of field is relatively shallow, isolating the subject from the background while maintaining enough detail to highlight the natural environment."
+  },
+  {
+    "id": "shorts_404",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/shorts/404.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "shorts",
+    "task": "video_captioning",
+    "prediction": "The video appears to be shot outdoors in a natural setting, utilizing ambient daylight as the primary light source. The lighting is soft and diffused, likely due to the presence of trees and foliage, which create a mix of shadows and highlights. The time of day seems to be late morning or early afternoon, as the sunlight is bright but not overly harsh.\n\nThe camera is positioned at an elevated angle, possibly from a balcony or a higher vantage point, providing a bird's-eye view of the scene. This perspective allows for a wide shot that captures the movement and interactions of multiple subjects within the frame. The camera remains stationary, suggesting the use of a tripod or a fixed mount to ensure stability. The framing incorporates natural elements like trees and bushes, which act as foreground and background layers, adding depth to the composition."
+  },
+  {
+    "id": "shorts_405",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/shorts/405.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "shorts",
+    "task": "video_captioning",
+    "prediction": "The video appears to be shot outdoors in a natural environment, utilizing natural daylight as the primary lighting source. The lighting is soft and diffused due to the overcast sky, which eliminates harsh shadows and provides even illumination across the scene. No artificial lighting setups are visible, suggesting reliance on ambient light.\n\nThe camera setup involves dynamic movement and varied angles to capture the action. The shots include wide angles to showcase the environment and the scale of the activity, as well as closer shots to focus on the subject. The camera appears to be handheld or stabilized with a gimbal for smooth tracking, especially during the bungee jump sequence. The framing adjusts to follow the subject's motion, ensuring the action remains central and engaging. Additionally, the camera operator likely uses a zoom lens or multiple cameras to achieve varied perspectives, such as the close-up of the jump and the wide shot of the surrounding landscape."
+  },
+  {
+    "id": "shorts_406",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/shorts/406.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "shorts",
+    "task": "video_captioning",
+    "prediction": "The video appears to be shot outdoors in a natural setting with mountainous terrain and clear skies. The camera setup likely involves a handheld or mounted device, as evidenced by the smooth movement and stable framing. The individual is seen holding a monopod or selfie stick, which suggests the use of a compact camera or smartphone for filming. The wide-angle view captures the surrounding landscape effectively, indicating the use of a lens with a broad field of view.\n\nThe lighting setup relies entirely on natural light. The bright sunlight creates a well-lit environment, with shadows visible on the ground and the subject's clothing. The lighting is soft and diffused due to the presence of clouds, which act as natural diffusers, reducing harsh contrasts. No artificial lighting equipment is visible, and the overall lighting complements the outdoor setting, highlighting the vibrant colors of the landscape and the subject's attire."
+  },
+  {
+    "id": "shorts_407",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/shorts/407.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "shorts",
+    "task": "video_captioning",
+    "prediction": "The video appears to be part of a production involving an outdoor obstacle course over water. Below is a description of the camera and lighting setup based on the provided images:\n\n### **Camera Setup:**\n1. **Crane Camera System:**\n   - A large camera crane is visible in the later frames, equipped with a stabilized camera rig. This setup allows for dynamic and smooth tracking shots of the participant as they navigate the obstacle course.\n   - The crane provides wide, sweeping shots and close-ups, ensuring the action is captured from various angles and heights.\n\n2. **Static and Ground-Level Cameras:**\n   - There are likely additional static cameras positioned around the course to capture different perspectives, such as the water level and audience reactions.\n   - A ground-level camera operator is visible in the water, capturing close-up shots of the participant from a lower angle. This provides a more immersive view of the action.\n\n3. **Framing:**\n   - The camera angles focus on the participant, ensuring they remain the central subject of the frame. The background, including the colorful set design and audience, adds context to the scene without distracting from the main action.\n\n### **Lighting Setup:**\n1. **Natural Lighting:**\n   - The production takes place outdoors during the daytime, utilizing natural sunlight as the primary light source. The clear blue sky provides even and bright lighting across the scene.\n   - Shadows are minimal, indicating that the sun is high in the sky, likely midday.\n\n2. **Reflective Surfaces:**\n   - The water in the pool acts as a natural reflector, bouncing light back onto the subject and creating a bright, vibrant atmosphere.\n   - The colorful set design also reflects light, enhancing the overall brightness and visual appeal of the scene.\n\n3. **Supplementary Lighting:**\n   - While not visible in the images, it is possible that additional lighting equipment, such as bounce boards or reflectors, is used to ensure the subject is well-lit and to reduce harsh shadows.\n\n### **Overall Setup:**\nThe production team has utilized a combination of dynamic crane shots, ground-level perspectives, and natural lighting to create a visually engaging and vibrant scene. The use of the crane camera allows for fluid movement and tracking of the participant, while the natural lighting and reflective surfaces contribute to the bright and energetic tone of the video."
+  },
+  {
+    "id": "shorts_408",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/shorts/408.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "shorts",
+    "task": "video_captioning",
+    "prediction": "The video appears to have been shot with a static camera positioned at eye level, capturing a full-body frame of the subject. The camera is likely a smartphone or a basic digital camera, as the footage has a straightforward, unembellished quality typical of social media content. The subject is centered in the frame, with minimal movement of the camera.\n\nThe lighting setup is simple and likely consists of ambient indoor lighting, such as ceiling lights or a single overhead source. The light is soft and evenly distributed, reducing harsh shadows on the subject and the background. The background is a plain wall, which reflects light evenly, contributing to the overall flat lighting effect. There is no evidence of additional professional lighting equipment, such as softboxes or reflectors, as the lighting lacks dramatic contrast or depth."
+  },
+  {
+    "id": "shorts_409",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/shorts/409.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "shorts",
+    "task": "video_captioning",
+    "prediction": "The video appears to be shot outdoors in a parking lot during daylight hours, utilizing natural light as the primary source of illumination. The lighting is soft and evenly distributed, likely due to the clear sky and indirect sunlight, which minimizes harsh shadows. The subject is well-lit, with the light enhancing the details of the clothing and accessories.\n\nThe camera setup seems to involve a stabilized handheld or gimbal-mounted camera, as the movement is smooth and follows the subject dynamically. The framing alternates between medium shots and close-ups, maintaining focus on the subject while capturing the surrounding environment. The depth of field is moderately shallow, keeping the subject in sharp focus while slightly blurring the background to emphasize the subject against the urban setting."
+  },
+  {
+    "id": "shorts_410",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/shorts/410.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "shorts",
+    "task": "video_captioning",
+    "prediction": "The video appears to be shot outdoors in a natural setting, utilizing natural daylight as the primary light source. The lighting is soft and evenly distributed, likely due to the clear sky and direct sunlight, which enhances the vibrant colors of the greenery and the subject's attire. Shadows are minimal, suggesting the sun is high in the sky, providing consistent illumination across the scene.\n\nThe camera setup seems to involve a handheld or stabilized device, as the framing is steady and follows the subject smoothly. The shots are composed to highlight the subject and the surrounding environment, with a shallow depth of field that keeps the subject in focus while slightly blurring the background. This technique emphasizes the subject while maintaining the scenic backdrop. The video quality suggests the use of a high-resolution camera, possibly a DSLR or a modern smartphone with advanced video capabilities."
+  },
+  {
+    "id": "stock_611",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/stock/611.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "stock",
+    "task": "video_captioning",
+    "prediction": "The camera setup in this video appears to use a shallow depth of field, likely achieved with a wide aperture lens, to create a cinematic look. The focus alternates between the foreground (such as the hand or the person near the door) and the background, emphasizing selective focus and guiding the viewer's attention. The framing is tight and intimate, with the camera positioned at eye level to capture the interaction at the door.\n\nThe lighting setup utilizes natural light streaming in from the open door, creating a high-contrast scene. The exterior is brightly lit, likely due to sunlight, while the interior is dimmer, creating a natural backlight effect. This contrast highlights the subject in the doorway and creates a sense of depth. Additional fill lighting may have been used inside to balance the shadows and ensure the foreground elements are visible without being overly dark. The lighting design enhances the realism and mood of the scene."
+  },
+  {
+    "id": "stock_612",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/stock/612.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "stock",
+    "task": "video_captioning",
+    "prediction": "The video depicts a close-up of hands being washed in a sink, with a focus on the faucet and water flow. Below is a description of the camera and lighting setup:\n\n### **Camera Setup:**\n1. **Shot Type:**  \n   The shots are close-ups, emphasizing the hands, faucet, and water. The framing is tight, with the sink and faucet occupying most of the frame, creating an intimate and focused perspective.\n\n2. **Camera Angle:**  \n   The camera is positioned at a slightly lower angle, level with the sink, to capture the hands and water flow. This angle provides a clear view of the action while maintaining a natural perspective.\n\n3. **Focus:**  \n   The focus is sharp on the hands and faucet, with a shallow depth of field. The background is softly blurred, ensuring the viewer's attention remains on the main subject.\n\n4. **Camera Movement:**  \n   The camera appears to be static, with no noticeable pans or tilts. The shots are steady, likely achieved using a tripod or stabilizer.\n\n### **Lighting Setup:**\n1. **Lighting Type:**  \n   The lighting is soft and diffused, creating an even illumination across the scene. This suggests the use of softboxes or diffused natural light.\n\n2. **Light Placement:**  \n   The light source is positioned to the side or slightly above the sink, ensuring minimal shadows and a clean, bright look. The reflections on the faucet indicate the presence of a light source nearby.\n\n3. **Color Temperature:**  \n   The lighting has a neutral to slightly cool color temperature, complementing the clean and sterile environment of the bathroom. This enhances the white tones of the sink and faucet.\n\n4. **Ambient Light:**  \n   There is likely some ambient light from the bathroom itself, possibly from overhead fixtures or natural light coming through a window. This contributes to the overall brightness and soft shadows.\n\n### **Overall Effect:**\nThe combination of close-up framing, steady camera work, and soft lighting creates a clean, professional, and focused visual aesthetic. The lighting emphasizes the cleanliness and clarity of the scene, while the camera angle and depth of field draw attention to the action of handwashing."
+  },
+  {
+    "id": "stock_613",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/stock/613.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "stock",
+    "task": "video_captioning",
+    "prediction": "The video appears to be shot outdoors on a football field, utilizing natural daylight as the primary lighting source. The lighting is even and soft, likely due to a slightly overcast sky, which minimizes harsh shadows and provides balanced illumination across the scene. No artificial lighting setups, such as reflectors or external lights, are visible or suggested in the footage.\n\nThe camera setup seems to involve handheld or stabilized movement, as the perspective follows the subjects dynamically, transitioning smoothly as they walk onto the field and begin playing. The framing is wide to medium, capturing the environment and the subjects in motion, with a focus on maintaining a clear view of the action. The depth of field is relatively deep, ensuring both the foreground and background elements are in focus, which is typical for outdoor sports scenes."
+  },
+  {
+    "id": "stock_614",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/stock/614.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "stock",
+    "task": "video_captioning",
+    "prediction": "The camera and lighting setup in this video appears to be designed for a clean, professional look with a focus on the subject's actions. Here's a breakdown:\n\n### **Camera Setup:**\n1. **Framing and Composition:**\n   - The camera is positioned at a medium close-up angle, focusing on the subject's torso and hands as they clean the equipment. This framing emphasizes the action and tools (spray bottle, cloth) while excluding the subject's face for anonymity or focus on the task.\n   - The shot is slightly off-center, creating a dynamic composition with the exercise equipment visible in the background.\n\n2. **Lens and Depth of Field:**\n   - A wide aperture is likely used, creating a shallow depth of field. This keeps the subject in sharp focus while softly blurring the background, drawing attention to the cleaning process.\n   - The blurred background includes gym equipment, providing context without distracting from the main subject.\n\n3. **Camera Movement:**\n   - The camera appears to be static, with no noticeable movement or panning. This keeps the focus steady on the subject's actions.\n\n4. **Resolution and Quality:**\n   - The video is shot in high definition, with clear details and natural colors, suggesting the use of a professional-grade camera.\n\n---\n\n### **Lighting Setup:**\n1. **Natural Lighting:**\n   - The scene is well-lit, with soft, diffused light that suggests the use of natural daylight coming from large windows in the gym. This creates a bright and clean atmosphere, suitable for the context of cleaning and hygiene.\n\n2. **Supplementary Lighting:**\n   - If additional lighting is used, it is likely soft and diffused to avoid harsh shadows. A softbox or reflector may have been employed to evenly illuminate the subject and reduce contrast.\n\n3. **Color Temperature:**\n   - The lighting has a warm, natural tone, complementing the gym's environment and creating a welcoming feel. The white balance is well-adjusted to maintain accurate color representation.\n\n4. **Shadow Control:**\n   - Shadows are minimal and soft, indicating careful placement of lights or reliance on ambient light. This ensures the subject and their actions are clearly visible without distractions.\n\n---\n\n### **Overall Setup:**\nThe video uses a clean and minimalistic approach to highlight the subject's actions. The combination of a static camera, shallow depth of field, and soft lighting creates a professional and focused visual style, ideal for instructional or promotional content in a gym or cleaning context."
+  },
+  {
+    "id": "stock_615",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/stock/615.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "stock",
+    "task": "video_captioning",
+    "prediction": "The video appears to be shot in a well-lit indoor environment, utilizing natural light as the primary source. Sunlight streams in from a window or opening on the right side of the frame, creating soft, diffused lighting that illuminates the subjects and the room. The natural light casts subtle shadows, adding depth to the scene without harsh contrasts.\n\nThe camera setup seems to involve a handheld or stabilizer-mounted camera, as there is slight movement and changes in framing throughout the video. The focus shifts dynamically between the foreground and background, suggesting the use of a lens with a shallow depth of field to emphasize specific subjects while softly blurring the background. The framing alternates between medium and close-up shots, maintaining an intimate and personal feel.\n\nNo additional artificial lighting sources, such as studio lights or reflectors, are evident, as the lighting remains consistent with the natural light coming from the window. The overall setup creates a warm and casual atmosphere suitable for a family or home setting."
+  },
+  {
+    "id": "stock_616",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/stock/616.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "stock",
+    "task": "video_captioning",
+    "prediction": "The video appears to be shot outdoors in a natural setting, utilizing natural light as the primary source of illumination. The lighting is soft and diffused, likely due to overcast weather conditions, which helps avoid harsh shadows and provides even lighting across the scene. The color temperature leans towards a cooler tone, enhancing the earthy and muted tones of the landscape.\n\nThe camera setup involves dynamic movement, likely achieved using a stabilizer or gimbal to maintain smooth tracking shots as the subject moves through the terrain. The depth of field is relatively shallow, with the background slightly blurred, suggesting the use of a wide aperture lens to focus attention on the subject and create a cinematic look. The camera angle alternates between medium and wide shots, capturing both the subject and the surrounding environment to emphasize the action and the scenic backdrop."
+  },
+  {
+    "id": "stock_617",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/stock/617.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "stock",
+    "task": "video_captioning",
+    "prediction": "The video appears to be shot outdoors in a natural setting, utilizing soft, diffused natural light. The lighting is even and consistent, likely due to overcast weather conditions, which help minimize harsh shadows and create a balanced exposure across the subject and background. The background is slightly blurred, indicating a shallow depth of field achieved through a wide aperture lens. This setup isolates the subject from the background, drawing focus to the subject's actions.\n\nThe camera is positioned at eye level, maintaining a medium close-up framing throughout the sequence. The smooth focus transitions and stable framing suggest the use of a tripod or gimbal for stabilization. The color grading leans towards warm, earthy tones, enhancing the natural environment and creating a cinematic look."
+  },
+  {
+    "id": "stock_618",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/stock/618.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "stock",
+    "task": "video_captioning",
+    "prediction": "The camera and lighting setup in this video appears to be designed for a close-up, well-lit, and focused shot of the interaction between individuals exchanging cinema tickets and holding popcorn. Here's a detailed breakdown:\n\n### **Camera Setup:**\n1. **Framing and Composition:**\n   - The camera is positioned at a medium-close range, focusing on the hands and objects (popcorn boxes and tickets) rather than the faces of the individuals.\n   - The framing centers the action, ensuring the popcorn boxes and tickets are the primary focus, with minimal background distractions.\n\n2. **Focus:**\n   - The camera uses a shallow depth of field, keeping the foreground (hands, tickets, and popcorn) in sharp focus while the background is softly blurred. This isolates the subject and draws attention to the interaction.\n\n3. **Movement:**\n   - The camera remains steady, likely mounted on a tripod or stabilizer, ensuring smooth and consistent framing throughout the sequence.\n\n4. **Lens:**\n   - A standard or slightly telephoto lens is likely used to achieve the shallow depth of field and close-up framing.\n\n### **Lighting Setup:**\n1. **Key Light:**\n   - A soft key light is positioned to the left or slightly above the subjects, illuminating the hands, tickets, and popcorn boxes evenly. This creates a natural and warm look without harsh shadows.\n\n2. **Fill Light:**\n   - A fill light is used to reduce shadows and balance the lighting on the right side of the frame, ensuring the objects and hands are well-lit from all angles.\n\n3. **Background Lighting:**\n   - The background is softly lit, maintaining a neutral tone and ensuring it does not distract from the main subjects. The lighting is diffused to avoid harsh contrasts.\n\n4. **Color Temperature:**\n   - The lighting has a warm tone, complementing the colors of the popcorn boxes and the skin tones of the individuals. This creates a welcoming and cinematic feel.\n\n5. **Diffusion:**\n   - Diffusers or softboxes are likely used to soften the light and avoid harsh shadows, ensuring the scene looks polished and professional.\n\n### **Overall Setup:**\nThe setup prioritizes clarity and focus on the interaction, with a clean and minimalistic aesthetic. The lighting and camera work together to create a visually appealing and engaging shot that highlights the objects and actions in the scene."
+  },
+  {
+    "id": "stock_619",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/stock/619.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "stock",
+    "task": "video_captioning",
+    "prediction": "The video appears to be shot outdoors in a natural environment, capturing cheetahs in motion. Here's a description of the camera and lighting setup:\n\n### **Camera Setup:**\n1. **Camera Movement:**\n   - The camera follows the cheetahs as they run, suggesting the use of a tracking or panning technique. This could be achieved with a tripod-mounted camera or a stabilized handheld setup.\n   - The smoothness of the motion indicates the possible use of a gimbal or a steady rig to maintain stability while tracking the fast-moving subjects.\n\n2. **Lens Choice:**\n   - The footage shows a mix of wide and medium shots, with the cheetahs clearly in focus. This suggests the use of a telephoto or zoom lens to capture the action from a distance while maintaining clarity and detail.\n\n3. **Frame Rate:**\n   - The cheetahs' movement is captured with minimal motion blur, indicating a high frame rate (possibly 60 fps or higher) to emphasize the speed and agility of the animals.\n\n4. **Focus:**\n   - The camera maintains focus on the cheetahs as they move, suggesting the use of continuous autofocus or manual focus adjustments to keep the subjects sharp.\n\n### **Lighting Setup:**\n1. **Natural Lighting:**\n   - The video relies entirely on natural sunlight, as it is shot outdoors in an open area. The shadows and warm tones suggest the footage was captured during late morning or early afternoon when the sun is higher in the sky.\n\n2. **Light Direction:**\n   - The sunlight creates distinct shadows on the ground, indicating the light source is directional and coming from above. The cheetahs are well-lit, with no harsh overexposure, suggesting the camera was positioned to avoid shooting directly into the sun.\n\n3. **No Artificial Lighting:**\n   - There is no evidence of artificial lighting or reflectors in the scene. The natural environment and the movement of the cheetahs make it impractical to use additional lighting equipment.\n\n### **Environment Considerations:**\n- The open terrain and sparse vegetation allow for unobstructed views of the cheetahs, making it easier to track their movement.\n- Dust kicked up by the cheetahs adds a dynamic element to the visuals, enhancing the sense of motion and speed.\n\n### **Summary:**\nThe video was likely shot using a high-quality camera with a telephoto or zoom lens, mounted on a gimbal or tripod for smooth tracking. The lighting is entirely natural, with the sun providing ample illumination and creating dynamic shadows. The setup is optimized for capturing fast-moving wildlife in an open, outdoor environment."
+  },
+  {
+    "id": "stock_620",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/stock/620.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "stock",
+    "task": "video_captioning",
+    "prediction": "The camera and lighting setup in this video appears to be designed for a food preparation scene, focusing on the hands and ingredients. Here's a detailed breakdown:\n\n### **Camera Setup:**\n1. **Angle and Framing:**\n   - The camera is positioned at a medium close-up angle, capturing the hands, food items, and part of the torso of the person preparing the dish.\n   - The framing centers on the cutting board and the food being prepared, with additional elements like bowls, a glass, and ingredients in the foreground and background to create depth.\n\n2. **Focus:**\n   - The focus is sharp on the cutting board and the food being prepared, while the foreground and background elements are slightly blurred, creating a shallow depth of field. This draws attention to the main subject (the food and hands).\n\n3. **Lens:**\n   - A wide aperture lens is likely used to achieve the shallow depth of field and emphasize the subject while keeping the background soft.\n\n4. **Camera Movement:**\n   - The camera remains static, allowing the action (cutting, assembling food) to be the focus without distraction.\n\n---\n\n### **Lighting Setup:**\n1. **Key Light:**\n   - A soft, diffused key light is positioned to the left or slightly above the subject, illuminating the cutting board and food evenly. This creates a natural and appealing look for the food.\n\n2. **Fill Light:**\n   - A fill light is used to reduce shadows on the right side of the subject, ensuring the hands and food are well-lit without harsh contrasts.\n\n3. **Background Lighting:**\n   - The background is softly lit, ensuring it doesn\u2019t overpower the subject but remains visible. The lighting is balanced to avoid distracting reflections or glare on the glass and bowls.\n\n4. **Color Temperature:**\n   - The lighting has a neutral or slightly warm color temperature, enhancing the natural colors of the food and creating a fresh, inviting atmosphere.\n\n5. **Soft Light Source:**\n   - The use of softboxes or diffusers is evident, as the lighting is even and avoids harsh shadows, which is ideal for food videography.\n\n---\n\n### **Overall Setup:**\nThe setup is minimalistic and clean, focusing on the food preparation process. The combination of a static camera, shallow depth of field, and soft lighting creates a professional and visually appealing scene that highlights the textures and colors of the food while maintaining a natural and inviting aesthetic."
+  },
+  {
+    "id": "youtube_801",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/youtube/801.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "youtube",
+    "task": "video_captioning",
+    "prediction": "The camera setup in this video appears to utilize a combination of static and dynamic shots to capture the action and interactions. The framing is consistent with a multi-camera setup, likely using wide-angle lenses for establishing shots and medium to close-up lenses for character-focused moments. The camera movement includes tracking shots to follow the action, such as the car driving and characters moving, ensuring fluidity and engagement.\n\nThe lighting setup is designed to mimic natural daylight, as the scenes are set outdoors. The lighting is evenly distributed, with minimal shadows, suggesting the use of diffused light sources like softboxes or reflectors to balance the sunlight and avoid harsh contrasts. In some shots, additional lighting may have been used to highlight specific areas or subjects, ensuring clarity and focus. The vibrant colors of the graffiti and the vehicles are well-lit, indicating attention to color saturation and brightness in the overall composition."
+  },
+  {
+    "id": "youtube_802",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/youtube/802.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "youtube",
+    "task": "video_captioning",
+    "prediction": "The camera setup appears to use a static, front-facing angle, likely mounted on a tripod or similar stabilizing equipment to ensure a steady shot. The framing is centered on the subject and the desk, with a clear view of the props and background elements. The depth of field is shallow, keeping the focus on the foreground elements while maintaining clarity in the background.\n\nThe lighting setup is bright and evenly distributed, suggesting the use of softbox lights or LED panels to minimize harsh shadows. The lighting is balanced to illuminate the subject and props without creating glare or overexposure. The background is well-lit, ensuring the illustrated elements and text are clearly visible. The overall lighting design creates a vibrant and engaging atmosphere suitable for educational or entertainment content."
+  },
+  {
+    "id": "youtube_803",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/youtube/803.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "youtube",
+    "task": "video_captioning",
+    "prediction": "The camera setup in this video appears to utilize a handheld or stabilizer-mounted camera, capturing dynamic angles and close-ups. The shots are framed to emphasize the subject and the surrounding environment, with a shallow depth of field in some instances to focus on specific elements. The camera movement is smooth, suggesting the use of a gimbal or similar stabilization equipment.\n\nThe lighting setup relies entirely on natural light, as the scene is shot outdoors in a forested area. The sunlight filters through the trees, creating a mix of soft and dappled lighting. The natural light enhances the greenery and provides a balanced exposure across the frame. No artificial lighting or reflectors seem to be used, as the lighting is consistent with the ambient conditions of the location."
+  },
+  {
+    "id": "youtube_804",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/youtube/804.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "youtube",
+    "task": "video_captioning",
+    "prediction": "The video appears to be an animated production, utilizing a flat, 2D illustration style with bold outlines and minimal shading. The camera setup is static, with a fixed perspective that centers the characters and objects within the frame. The animation is designed to maintain clarity and focus on the subject matter, with no dynamic camera movements or depth effects.\n\nThe lighting setup is implied rather than physically present, as the animation uses a clean, white background to create a bright and neutral environment. The characters and objects are rendered with solid colors and no gradients, suggesting that the lighting is uniform and evenly distributed across the scene. This approach ensures the visuals are simple, accessible, and easy to interpret, aligning with the informative nature of the video."
+  },
+  {
+    "id": "youtube_805",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/youtube/805.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "youtube",
+    "task": "video_captioning",
+    "prediction": "The camera and lighting setup in this video appears to be designed for a cooking demonstration or food preparation sequence. Here's a detailed breakdown:\n\n### **Camera Setup:**\n1. **Angle and Framing:**\n   - The camera is positioned at a slightly elevated angle, providing a clear view of the cooking pot and cutting board. This perspective is ideal for showcasing food preparation.\n   - The framing focuses on the subject (the pot, vegetables, and cutting board) while keeping the background slightly blurred, emphasizing the foreground elements.\n\n2. **Focus:**\n   - The camera uses a shallow depth of field, creating a blurred background effect (bokeh). This technique draws attention to the main subject, such as the pot, vegetables, and hands during the cutting process.\n   - The focus shifts dynamically between the pot and the cutting board, ensuring the viewer's attention is directed to the action.\n\n3. **Movement:**\n   - The camera remains stationary for most of the shots, suggesting the use of a tripod or stabilizer for steady footage.\n   - The transitions between shots are smooth, indicating either manual adjustments or editing cuts to maintain continuity.\n\n4. **Lens:**\n   - A wide aperture lens is likely used to achieve the shallow depth of field and vibrant colors. This is common in food videography to make the visuals more appealing.\n\n### **Lighting Setup:**\n1. **Key Light:**\n   - A soft key light is positioned to illuminate the cooking area and cutting board. The light is diffused, reducing harsh shadows and creating an even, natural look.\n   - The light source is likely placed slightly to the side and above the subject, ensuring the food and hands are well-lit.\n\n2. **Fill Light:**\n   - A secondary fill light is used to minimize shadows on the opposite side of the key light. This ensures the subject is evenly lit without overly dramatic contrasts.\n\n3. **Background Lighting:**\n   - The background is dimly lit, creating a subtle contrast between the subject and the environment. This helps maintain focus on the food and preparation process.\n\n4. **Color Temperature:**\n   - The lighting has a warm tone, enhancing the natural colors of the food and creating a cozy, inviting atmosphere typical of cooking videos.\n\n5. **Reflection Control:**\n   - Care is taken to avoid reflections on shiny surfaces like the pot and countertop. This suggests the use of diffusers or careful positioning of lights.\n\n### **Overall Setup:**\nThe setup is optimized for food videography, with an emphasis on clarity, color vibrancy, and focus on the subject. The combination of a stationary camera, shallow depth of field, and soft lighting creates a professional and visually appealing result."
+  },
+  {
+    "id": "youtube_806",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/youtube/806.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "youtube",
+    "task": "video_captioning",
+    "prediction": "The camera setup in this video appears to use a handheld or stabilized rig for smooth movement and close-up shots. The framing alternates between medium shots and close-ups, focusing on specific actions and objects, such as brushing teeth and operating the shower. The shallow depth of field in some shots suggests the use of a wide-aperture lens, which helps isolate the subject from the background and creates a cinematic look.\n\nThe lighting setup is soft and evenly distributed, likely achieved using diffused artificial lights or natural light from the bathroom environment. The white walls and reflective surfaces, such as the mirror and shower fixtures, contribute to the overall brightness and clean aesthetic. The lighting avoids harsh shadows, maintaining a natural and balanced look suitable for a bathroom setting."
+  },
+  {
+    "id": "youtube_807",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/youtube/807.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "youtube",
+    "task": "video_captioning",
+    "prediction": "The video appears to be a recording of a football match in an outdoor stadium. Below is a description of the camera and lighting setup based on the provided images:\n\n### **Camera Setup:**\n1. **Primary Camera Position:**\n   - The primary camera is positioned at a high vantage point, likely in the stands or a designated media area. This allows for a wide-angle view of the field, capturing most of the action and providing a clear perspective of the game.\n   - The camera is stationary, with occasional panning and zooming to follow the ball and players.\n\n2. **Secondary Camera Positions:**\n   - There are additional cameras positioned closer to the field, as seen in the images. These cameras are likely operated by individuals sitting or kneeling near the sidelines. Their purpose is to capture close-up shots of specific moments, such as goal attempts or player interactions.\n\n3. **Camera Type:**\n   - The cameras used appear to be standard broadcast cameras suitable for sports coverage. They are capable of zooming and maintaining focus on fast-moving subjects.\n\n4. **Framing:**\n   - The framing prioritizes the action on the field, with wide shots to capture the overall gameplay and tighter shots for key moments like goals or player movements.\n\n### **Lighting Setup:**\n1. **Natural Lighting:**\n   - The match is played during the daytime, relying entirely on natural light. The lighting is even and diffused, suggesting overcast weather conditions, which minimizes harsh shadows and glare.\n\n2. **No Artificial Lighting:**\n   - There are no visible artificial lighting setups such as floodlights or spotlights. This is typical for daytime outdoor sports events, especially in smaller stadiums or venues.\n\n3. **Environmental Impact:**\n   - The lighting conditions are consistent throughout the video, with no significant changes in brightness or color temperature. This ensures a uniform visual experience for viewers.\n\n### **Production Notes:**\n- The setup is relatively simple and functional, focusing on capturing the game effectively rather than employing elaborate production techniques.\n- The use of multiple camera angles enhances the viewing experience, providing both wide and close-up perspectives.\n- The absence of artificial lighting suggests a cost-effective production approach, relying on the natural environment for illumination.\n\nThis setup is typical for local or regional sports coverage, where the emphasis is on documenting the event rather than creating a cinematic experience."
+  },
+  {
+    "id": "youtube_808",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/youtube/808.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "youtube",
+    "task": "video_captioning",
+    "prediction": "The video appears to be an animated production, which means the camera and lighting setup are simulated digitally rather than physically. Here's a breakdown of the setup:\n\n### **Camera Setup:**\n1. **Framing and Composition:**\n   - The camera is positioned to capture medium shots of the characters, focusing on their upper bodies and facial expressions.\n   - The framing is centered, ensuring both characters are visible and balanced within the frame.\n   - In scenes with text (\"Relax & De-stress\"), the camera adjusts to include the text in the composition, maintaining symmetry.\n\n2. **Movement:**\n   - The camera remains static, with no visible pans, tilts, or zooms. This is typical for animated videos where the focus is on dialogue and character interaction.\n\n3. **Perspective:**\n   - The perspective is flat and straightforward, with no dynamic angles or depth. This keeps the visuals simple and accessible, aligning with the style of the animation.\n\n---\n\n### **Lighting Setup:**\n1. **General Lighting:**\n   - The lighting is soft and evenly distributed, creating a flat and clean look typical of 2D animation.\n   - Shadows and highlights are minimal, maintaining a consistent and bright aesthetic.\n\n2. **Color Palette:**\n   - The background uses pastel tones (light blue, beige, etc.), which complement the characters and create a calming atmosphere.\n   - The lighting matches the color palette, avoiding harsh contrasts or dramatic effects.\n\n3. **Scene-Specific Lighting:**\n   - In the reading scene, the lighting is warm and cozy, reflecting the indoor environment. The lamp in the background suggests a source of ambient light.\n   - In the bathtub scene, the lighting is soft and diffused, mimicking natural light or bathroom lighting, enhancing the relaxing mood.\n\n---\n\n### **Overall Style:**\nThe camera and lighting setup are designed to support the simplicity and charm of the animation. The static camera and soft lighting ensure the focus remains on the characters and their interactions, while the pastel color palette and minimal shadows contribute to the calming and approachable tone of the video."
+  },
+  {
+    "id": "youtube_809",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/youtube/809.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "youtube",
+    "task": "video_captioning",
+    "prediction": "The camera setup in this video appears to utilize a stable, fixed position or handheld approach for capturing the subject and surroundings. The shots are well-framed, with the subject and their bicycle positioned centrally or slightly off-center, allowing the environment to play a significant role in the composition. The depth of field suggests the use of a wide-angle lens to capture the expansive outdoor scenery. The camera maintains a consistent focus on the subject and their actions, ensuring clarity and detail.\n\nThe lighting setup relies entirely on natural light, as the scenes are shot outdoors during daylight hours. In the first image, the subject is positioned under partial shade from trees, creating a mix of direct sunlight and diffused light. This results in soft shadows and balanced exposure. In the subsequent images, the lighting is more direct, with the sun illuminating the subject and the surrounding landscape evenly. The natural light enhances the vibrant colors of the greenery and the dirt road, contributing to the overall aesthetic of the video. No artificial lighting or reflectors appear to be used, emphasizing the organic and natural feel of the production."
+  },
+  {
+    "id": "youtube_810",
+    "video_path": "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50/youtube/810.mp4",
+    "prompt": "For a film production report, describe the camera and lighting setup in this video",
+    "reference": null,
+    "source": "youtube",
+    "task": "video_captioning",
+    "prediction": "The camera setup in this video appears to involve a handheld or stabilized camera positioned at a low angle to capture the action from the perspective of the dogs and their handlers. The camera operator is likely following the movement closely to maintain focus on the subjects, ensuring dynamic and engaging shots. The depth of field is relatively shallow, keeping the foreground subjects sharp while slightly blurring the background to emphasize the action.\n\nThe lighting setup is consistent with an indoor event space, utilizing overhead artificial lighting. The venue is well-lit with even illumination across the field, minimizing shadows and ensuring visibility of the subjects and obstacles. The lighting is likely a combination of diffused overhead fixtures and ambient light from the venue, providing a balanced and natural look suitable for sports or event coverage."
+  }
+]

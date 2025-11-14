@@ -1,0 +1,17 @@
+[
+  {
+    "id": 0,
+    "video_path": "/media/sda/vlm_datasets/EventHallusion/videos/entire/entire_002.mp4",
+    "reference": "The filmmaker captured a bear in the yard, and then the bear broke through the fence and escaped."
+  },
+  {
+    "id": 1,
+    "video_path": "/media/sda/vlm_datasets/EventHallusion/videos/entire/entire_012.mp4",
+    "reference": "A dark colored calico cat is eating while the little white cat next to it keeps biting the bowl."
+  },
+  {
+    "id": 2,
+    "video_path": "/media/sda/vlm_datasets/EventHallusion/videos/entire/entire_028.mp4",
+    "reference": "A cat is riding a skateboard. As it passes by a black dog, it jumps onto the dog and then jumps back onto the skateboard and rides away. The dog seems very angry and tries to chase the cat on the skateboard."
+  }
+  ]

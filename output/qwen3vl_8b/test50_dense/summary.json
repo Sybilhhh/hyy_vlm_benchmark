@@ -1,0 +1,14 @@
+{
+  "models": [
+    "qwen3vl-8b"
+  ],
+  "datasets": [
+    "test-50_dense"
+  ],
+  "evaluators": [],
+  "scores": {
+    "qwen3vl-8b": {
+      "test-50_dense": {}
+    }
+  }
+}

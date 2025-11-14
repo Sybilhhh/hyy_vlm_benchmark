@@ -1,0 +1,112 @@
+[
+  {
+    "id": 1,
+    "image_path": null,
+    "video_path": "/media/sda/vlm_datasets/DREAM-1K/video/1.mp4",
+    "reference": "A character emerges from smoke and fire, then half knelt on the ground and made a gesture to give instructions, while another group of characters rushed forward and grabbed two green monsters.",
+    "events": [
+      "A character emerges from smoke and fire.",
+      "The character half kneels on the ground.",
+      "The character makes a gesture to give instructions.",
+      "A group of characters rushes forward.",
+      "The group of characters grabs two green monsters."
+    ],
+    "n_subjects": 4,
+    "n_shots": 2,
+    "duration": 5.09,
+    "prediction": [
+      "The video depicts a scene from an animated film featuring anthropomorphic characters in a dimly lit, industrial setting. The characters appear to be robots or mechanical beings with a humanoid form, wearing various accessories such as goggles and helmets. They have a somewhat menacing appearance, with one character prominently in the foreground holding a weapon-like object"
+    ]
+  },
+  {
+    "id": 2,
+    "image_path": null,
+    "video_path": "/media/sda/vlm_datasets/DREAM-1K/video/2.mp4",
+    "reference": "One character raises their hand and then puts it down. The other character walks away and is followed by the former, both characters go up a staircase together.",
+    "events": [
+      "One character raises their hand.",
+      "The same character puts their hand down.",
+      "The other character walks away.",
+      "The first character follows the other.",
+      "Both characters go up a staircase together."
+    ],
+    "n_subjects": 2,
+    "n_shots": 1,
+    "duration": 9.67,
+    "prediction": [
+      "The video depicts two characters in a dimly lit, industrial setting that appears to be a factory or a warehouse. The environment is filled with metal structures, pipes, and machinery, giving it a gritty and mechanical atmosphere. \n\nThe character on the left has short, light-colored hair and is wearing a sleeveless top and"
+    ]
+  },
+  {
+    "id": 3,
+    "image_path": null,
+    "video_path": "/media/sda/vlm_datasets/DREAM-1K/video/3.mp4",
+    "reference": "Several animals jumped into a yellow pipe one by one, and the last brown bird jumped directly off the platform.",
+    "events": [
+      "Animals jumped into a yellow pipe",
+      "A brown bird jumped off the platform"
+    ],
+    "n_subjects": 6,
+    "n_shots": 1,
+    "duration": 4.88,
+    "prediction": [
+      "The video depicts an animated scene featuring two characters on the edge of a high-rise building. One character is a bird with orange and white feathers, perched on the concrete ledge. The other character is a small, white, fluffy creature with a pink nose, standing in a yellow bucket that is secured to the building by"
+    ]
+  },
+  {
+    "id": 4,
+    "image_path": null,
+    "video_path": "/media/sda/vlm_datasets/DREAM-1K/video/4.mp4",
+    "reference": "A mouse is pushing a bowl and making a frightened expression. A cat falling down, causing the bowl to fly up. A mouse holding a key is covered under the bowl. The cat grabbing the bowl.",
+    "events": [
+      "A mouse pushes a bowl.",
+      "A mouse makes a frightened expression.",
+      "A cat falls down.",
+      "The bowl flies up.",
+      "A mouse holds a key.",
+      "A mouse is covered under the bowl.",
+      "The cat grabs the bowl."
+    ],
+    "n_subjects": 3,
+    "n_shots": 1,
+    "duration": 4.05,
+    "prediction": [
+      "The image depicts an animated scene featuring two characters in a dark, dimly lit room with wooden floors and stone walls. The character on the left is a large, angry-looking cat with a grumpy expression, sharp teeth, and a prominent frown. The cat has a bushy tail and is wearing a pink collar"
+    ]
+  },
+  {
+    "id": 5,
+    "image_path": null,
+    "video_path": "/media/sda/vlm_datasets/DREAM-1K/video/5.mp4",
+    "reference": "The black cat blows out a candle. Then the scene turns to this black cat holding a bowl when suddenly a plate hits its head.",
+    "events": [
+      "The black cat blows out a candle.",
+      "The black cat holds a bowl.",
+      "A plate hits the black cat's head."
+    ],
+    "n_subjects": 1,
+    "n_shots": 1,
+    "duration": 4.05,
+    "prediction": [
+      "The image depicts an animated scene featuring a large, dark-furred cat with a mischievous expression. The cat has a bushy tail and is holding a blue cup in its paws. The cat's eyes are wide open, and it appears to be in the middle of a chaotic moment, as there are pieces"
+    ]
+  },
+  {
+    "id": 6,
+    "image_path": null,
+    "video_path": "/media/sda/vlm_datasets/DREAM-1K/video/6.mp4",
+    "reference": "Two animated birds fly towards the door lock first and have a brief conversation. Then they fly out of a stone window into the sunlight.",
+    "events": [
+      "Two animated birds fly towards the door lock.",
+      "Animated birds have a brief conversation.",
+      "Animated birds fly out of the stone window.",
+      "Animated birds enter the sunlight."
+    ],
+    "n_subjects": 2,
+    "n_shots": 1,
+    "duration": 6.13,
+    "prediction": [
+      "The video depicts an animated scene featuring two birds interacting with a door and a window. The first bird, which is blue with orange feet and a pink patch on its chest, is seen flying towards the door. The second bird, also blue but with a yellow beak and feet, is perched on the door handle"
+    ]
+  }
+]

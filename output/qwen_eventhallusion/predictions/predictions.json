@@ -1,0 +1,97 @@
+[
+  {
+    "id": "001",
+    "video_path": "/media/sda/vlm_datasets/EventHallusion/videos/entire/entire_001.mp4",
+    "prompt": [
+      "Is the man playing with the dog in the video?\nPlease answer yes or no:",
+      "Please describe this video in detail."
+    ],
+    "reference": [
+      "No.",
+      "The white dog was barking wildly at the passing man."
+    ],
+    "duration": "00:02",
+    "source": "pet&animal",
+    "task": "entire",
+    "prediction": [
+      "No.",
+      "The video depicts an action scene set in what appears to be an industrial or construction area, characterized by corrugated metal walls and scattered debris on the ground. A man is seen in mid-action, seemingly engaged in a fight or confrontation. He is dressed in a dark jacket and light-colored pants, and his posture suggests he is either dodging an attack or preparing to strike. His arms are raised, and his body is leaning forward, indicating movement and intensity.\n\nIn the foreground, there is a white dog that appears to be running or moving quickly, possibly reacting to the commotion or being part of the scene. The background includes various objects such as a motorcycle, some bags, and other miscellaneous items, which contribute to the chaotic atmosphere of the setting. The overall tone of the video suggests a tense and dynamic moment, likely from a film or television show."
+    ]
+  },
+  {
+    "id": "002",
+    "video_path": "/media/sda/vlm_datasets/EventHallusion/videos/entire/entire_002.mp4",
+    "prompt": [
+      "Is the filmmaker playing with the bear in the video?\nPlease answer yes or no:",
+      "Please describe this video in detail."
+    ],
+    "reference": [
+      "No.",
+      "The filmmaker captured a bear in the yard, and then the bear broke through the fence and escaped."
+    ],
+    "duration": "00:09",
+    "source": "pet&animal",
+    "task": "entire",
+    "prediction": [
+      "No.",
+      "The video appears to be taken outdoors, likely in a backyard or garden area. The setting includes a wooden fence and some greenery, such as plants and trees. There is also a small structure that looks like a shed or a small house with a triangular roof.\n\nIn the video, a person wearing dark clothing is seen running across the yard. They move quickly from one side of the frame to the other, passing by the wooden fence and the small structure. The person's movement is swift and purposeful, suggesting they might be in a hurry or trying to avoid something. The background is slightly blurred due to the motion, indicating the camera was moving as well, possibly handheld.\n\nThe lighting suggests it is daytime, but the exact time of day is not clear. The overall atmosphere seems casual and informal, typical of a home environment."
+    ]
+  },
+  {
+    "id": "003",
+    "video_path": "/media/sda/vlm_datasets/EventHallusion/videos/entire/entire_003.mp4",
+    "prompt": [
+      "Is the bird drinking the coffee in the video?\nPlease answer yes or no:",
+      "Please describe this video in detail."
+    ],
+    "reference": [
+      "No.",
+      "This bird is holding a spoon and using it to stir coffee."
+    ],
+    "duration": "00:09",
+    "source": "pet&animal",
+    "task": "entire",
+    "prediction": [
+      "No.",
+      "The video shows a small bird perched on the edge of a table, interacting with a person who is holding a yellow mug filled with a brown liquid, likely tea or coffee. The bird appears to be curious and is using its beak to gently touch the spoon inside the mug, which is being stirred by the person's hand. The table has a patterned tablecloth with a geometric design. In the background, there is a wooden cabinet with some items on it, suggesting a home setting. The overall atmosphere seems casual and domestic, with the bird showing interest in the mug and the liquid inside."
+    ]
+  },
+  {
+    "id": "004",
+    "video_path": "/media/sda/vlm_datasets/EventHallusion/videos/entire/entire_004.mp4",
+    "prompt": [
+      "Is the girl sitting on a bicycle and riding it in this video?\nPlease answer yes or no:",
+      "Please describe this video in detail."
+    ],
+    "reference": [
+      "No.",
+      "A girl is walking while lifting a bicycle."
+    ],
+    "duration": "00:06",
+    "source": "vehicle",
+    "task": "entire",
+    "prediction": [
+      "No.",
+      "The video shows a person walking outdoors at night while carrying a red Trek bicycle. The individual is dressed in dark clothing, including a jacket and pants, and is wearing shoes suitable for walking or casual activities. The bicycle is positioned horizontally across the person's back, with the front wheel pointing upwards and the rear wheel downwards. The setting appears to be an urban area with paved walkways, and there are some illuminated structures and possibly a building in the background. The lighting suggests it is nighttime, as the surroundings are dimly lit except for the artificial lights from the buildings and possibly streetlights. The person seems to be moving steadily forward, likely heading towards a destination."
+    ]
+  },
+  {
+    "id": "005",
+    "video_path": "/media/sda/vlm_datasets/EventHallusion/videos/entire/entire_005.mp4",
+    "prompt": [
+      "Is the girl sitting on a bicycle and riding it in this video?\nPlease answer yes or no:",
+      "Please describe this video in detail."
+    ],
+    "reference": [
+      "No.",
+      "A girl is walking while lifting a bicycle."
+    ],
+    "duration": "00:05",
+    "source": "vehicle",
+    "task": "entire",
+    "prediction": [
+      "No.",
+      "The video shows a person riding a bicycle on a paved path, likely in an urban or suburban setting. The individual is wearing a white helmet and a light-colored long-sleeve shirt paired with dark shorts. They appear to be in motion, pedaling the bike forward. The background includes some greenery, such as trees and possibly a fence, indicating that the path might be near a park or a residential area. The lighting suggests it could be daytime, and the overall atmosphere seems calm and leisurely."
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "models": [
+    "qwen2.5vl-32b"
+  ],
+  "datasets": [
+    "test-50_dense"
+  ],
+  "evaluators": [],
+  "scores": {
+    "qwen2.5vl-32b": {
+      "test-50_dense": {}
+    }
+  }
+}

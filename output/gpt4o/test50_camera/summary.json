@@ -1,0 +1,14 @@
+{
+  "models": [
+    "gpt-4o"
+  ],
+  "datasets": [
+    "test-50"
+  ],
+  "evaluators": [],
+  "scores": {
+    "gpt-4o": {
+      "test-50": {}
+    }
+  }
+}

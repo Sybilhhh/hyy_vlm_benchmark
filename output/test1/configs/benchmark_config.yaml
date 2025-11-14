@@ -1,0 +1,100 @@
+# VLM Benchmark Configuration Example
+models:
+  gpt-4o:
+    type: api
+    model_name: "gpt-4o"
+    endpoint: "https://openaieastus2instance.openai.azure.com/openai/deployments/gpt-4o-cv-chx0812/chat/completions?api-version=2025-01-01-preview"
+    api_version: "2024-12-01-preview"
+    api_key: "990a353da7b44bef8466402378c486cd"
+    max_tokens: 4096
+    temperature: 0
+    top_p: 1.0
+  
+  qwen2.5vl-7b:
+    type: local
+    model_path: "/media/sda/roy/Qwen2.5-VL-7B-Instruct/"
+    device: "auto"
+    max_pixels: 460800
+    fps: 1
+    max_new_tokens: 512
+    temperature: 0.000001
+  
+  tarsier2-7b:
+    type: local
+    model_path: "/media/sda/vlm_datasets/Tarsier2-7b-0115"
+    device: "auto"
+    max_new_tokens: 512
+    max_n_frames: 256
+    n_frames: 16
+    max_pixels: 460800 # 1280 * 720 // 2
+    min_pixels: 0
+    max_seq_len: 16384
+    is_training: false  # 会影响：1. 训练和测试时采帧不同；2. 测试时忽略 response。
+    print_data_error: true
+    is_training: false
+    do_image_padding: false
+    do_image_crop: false
+    do_image_resize: false
+    video_sampling_strategy: {'video_sampler_version': 'v1', 'force_frames_n_divisible': 1, 'use_multi_images_for_video': true}
+    prompt: ""
+    train_task: sft
+
+
+datasets:
+  dream-1k:
+    data_path: "/media/sda/vlm_datasets/DREAM-1K"
+    annotation_file: "/media/sda/vlm_datasets/DREAM-1K/json/metadata.json"
+    max_samples: 0
+    load_predictions_from_file: null
+
+  et-bench-captioning:
+    data_path: "/data/datasets/ETBench"
+    annotation_file: "/data/datasets/ETBench/annotations/etbench_txt_dvc_slc_test.json"
+    max_samples: 0
+    load_predictions_from_file: null
+
+  video-hallucer:
+    data_path: "/data/datasets/VideoHallucer"
+    annotation_file: "/data/datasets/VideoHallucer"
+    max_samples: 0
+    load_predictions_from_file: "/workspace/videocaptionevaluation/output/test_video_hallucer/predictions/predictions.json"
+
+  event-hallusion:
+    data_path: "/media/sda/vlm_datasets/EventHallusion/videos/"
+    annotation_file: "/media/sda/vlm_datasets/EventHallusion/questions/"
+    max_samples: 5
+    load_predictions_from_file: null
+
+
+
+evaluators:
+  autodq:
+    type: autodq
+    model_name: "gpt-4o"
+    endpoint: "https://openaieastus2instance.openai.azure.com/openai/deployments/gpt-4o-cv-chx0812/chat/completions?api-version=2025-01-01-preview"
+    api_version: "2024-12-01-preview"
+    api_key: "990a353da7b44bef8466402378c486cd"
+    max_tokens: 4096
+    temperature: 1.0
+    top_p: 1.0
+
+  etbench:
+    type: etbench
+    sentence_model: "/data/datasets/ETBench/all-MiniLM-L6-v2"
+
+  video-hallucer: 
+    type: video-hallucer
+
+  event-hallusion:
+    type: event-hallusion
+    model_name: "gpt-4o"
+    endpoint: "https://openaieastus2instance.openai.azure.com/openai/deployments/gpt-4o-cv-chx0812/chat/completions?api-version=2025-01-01-preview"
+    api_version: "2024-12-01-preview"
+    api_key: "990a353da7b44bef8466402378c486cd"
+    max_tokens: 128
+    temperature: 1.0
+    top_p: 1.0
+
+logging:
+  level: INFO
+  file: "./logs/benchmark.log"

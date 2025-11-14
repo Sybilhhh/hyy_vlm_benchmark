@@ -1,0 +1,18 @@
+{
+  "task": "test-50-dense-caption",
+  "model_a": "modela",
+  "model_b": "modelb",
+  "elapsed_time": 385.66551208496094,
+  "avg_per_comparison": 7.713310241699219,
+  "throughput": 7.778761403324831,
+  "wins_a": 36,
+  "wins_b": 10,
+  "ties": 0,
+  "errors": 4,
+  "win_rate_a": 0.782608695652174,
+  "win_rate_b": 0.21739130434782608,
+  "tie_rate": 0.0,
+  "concurrent": 5,
+  "video_frames": 8,
+  "video_aware": true
+}

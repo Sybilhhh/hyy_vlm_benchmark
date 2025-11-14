@@ -1,0 +1,7 @@
+{
+  "tarsier2-7b": {
+    "dream-1k": {
+      "autodq": "EvaluationResult(score=0.0, details={'individual_scores': [{'id': 1, 'source': 'DREAM/movie_animation', 'error': \"'list' object has no attribute 'split'\", 'success': False}, {'id': 2, 'source': 'DREAM/movie_animation', 'error': \"'list' object has no attribute 'split'\", 'success': False}, {'id': 3, 'source': 'DREAM/movie_animation', 'error': \"'list' object has no attribute 'split'\", 'success': False}, {'id': 4, 'source': 'DREAM/movie_animation', 'error': \"'list' object has no attribute 'split'\", 'success': False}, {'id': 5, 'source': 'DREAM/movie_animation', 'error': \"'list' object has no attribute 'split'\", 'success': False}], 'mean_f1': 0.0, 'std_f1': 0.0, 'num_evaluated': 0, 'category_table': '===== AutoDQ Evaluation by Category (source) =====\\n+----------+----------+---------------+------------------+---------+--------+\\n| Category | F1 Score | Action Recall | Action Precision | Success | Failed |\\n+----------+----------+---------------+------------------+---------+--------+\\n| OVERALL  |   0.0    |      0.0      |       0.0        |    0    |   5    |\\n+----------+----------+---------------+------------------+---------+--------+', 'mean_recall': 0.0, 'mean_precision': 0.0}, method='autodq_dream_by_source', ground_truth_required=True)"
+    }
+  }
+}
