@@ -1,0 +1,23 @@
+# Core dependencies
+aiohttp>=3.8.0
+aiofiles>=22.1.0
+Pillow>=9.0.0
+pyyaml>=6.0
+pathlib
+prettytable
+tqdm
+asyncio
+torch==2.8.0
+torchvision==0.23.0
+transformers==4.57.1
+accelerate
+# opencv-python
+Pillow
+nncore
+openai
+qwen-vl-utils[decord]
+einops
+pandas
+pyarrow
+func_timeout
+# flash-attn
