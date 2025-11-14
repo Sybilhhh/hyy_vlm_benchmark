@@ -1,0 +1,217 @@
+# VLM Benchmark Configuration Example
+models:
+  gpt-4o:
+    type: api
+    model_name: "gpt-4o"
+    endpoint: "https://openaieastus2instance.openai.azure.com/openai/deployments/gpt-4o-cv-chx0812/chat/completions?api-version=2025-01-01-preview"
+    api_version: "2024-12-01-preview"
+    api_key: "990a353da7b44bef8466402378c486cd"
+    max_tokens: 4096
+    temperature: 0
+    top_p: 1.0
+    num_video_frames: 8  # 从视频中提取的帧数
+  
+  qwen2.5vl-7b:
+    type: local
+    model_path: "/home/dyvm6xra/dyvm6xrauser04/models/models--Qwen--Qwen2.5-VL-7B-Instruct/snapshots/cc594898137f460bfe9f0759e9844b3ce807cfb5"
+    device: "auto"
+    max_pixels: 460800
+    fps: 1
+    max_new_tokens: 512
+    temperature: 0.000001
+    batch_size: 32  # 批量推理大小，提高多GPU利用率
+  
+  qwen2.5vl-32b:
+    type: local
+    model_path: "/home/dyvm6xra/dyvm6xrauser04/models/models--Qwen--Qwen2.5-VL-32B-Instruct/snapshots/7cfb30d71a1f4f49a57592323337a4a4727301da"
+    device: "auto"
+    max_pixels: 460800
+    fps: 1
+    max_new_tokens: 512
+    temperature: 0.000001
+    batch_size: 16  # 32B模型显存占用更大，使用较小的batch size
+  
+  qwen3vl-8b:
+    type: local
+    model_path: "/home/dyvm6xra/dyvm6xrauser04/models/models--Qwen--Qwen3-VL-8B-Instruct/snapshots/0c351dd01ed87e9c1b53cbc748cba10e6187ff3b"
+    device: "auto"
+    max_pixels: 460800
+    fps: 1
+    max_new_tokens: 512
+    temperature: 0.000001
+    batch_size: 32  # 批量推理大小，提高多GPU利用率
+
+  tarsier2-7b:
+    type: local
+    model_path: "/media/sda/vlm_datasets/Tarsier2-7b-0115"
+    device: "auto"
+    max_new_tokens: 512
+    max_n_frames: 256
+    n_frames: 16
+    max_pixels: 460800 # 1280 * 720 // 2
+    min_pixels: 0
+    max_seq_len: 16384
+    is_training: false  # 会影响：1. 训练和测试时采帧不同；2. 测试时忽略 response。
+    print_data_error: true
+    is_training: false
+    do_image_padding: false
+    do_image_crop: false
+    do_image_resize: false
+    video_sampling_strategy: {'video_sampler_version': 'v1', 'force_frames_n_divisible': 1, 'use_multi_images_for_video': true}
+    prompt: ""
+    train_task: sft
+    temperature: 0
+
+
+datasets:
+  dream-1k:
+    data_path: "/media/sda/vlm_datasets/DREAM-1K"
+    annotation_file: "/media/sda/vlm_datasets/DREAM-1K/json/metadata.json"
+    max_samples: 0
+    load_predictions_from_file: null
+
+  et-bench-captioning:
+    data_path: "/data/datasets/ETBench"
+    annotation_file: "/data/datasets/ETBench/annotations/etbench_txt_dvc_slc_test.json"
+    max_samples: 0
+    load_predictions_from_file: null
+
+  video-hallucer:
+    data_path: "/media/sda/vlm_datasets/VideoHallucer"
+    annotation_file: "/media/sda/vlm_datasets/VideoHallucer"
+    max_samples: 0
+    load_predictions_from_file: null
+
+  event-hallusion:
+    data_path: "/media/sda/vlm_datasets/EventHallusion/videos/"
+    annotation_file: "/media/sda/vlm_datasets/EventHallusion/questions/"
+    max_samples: 0
+    load_predictions_from_file: null
+
+  test-50_camera:
+    data_path: "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50"
+    max_samples: 0
+    load_predictions_from_file: null
+  
+  test-50_dense:
+    data_path: "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/test_50"
+    max_samples: 0
+    load_predictions_from_file: null
+
+
+
+evaluators:
+  autodq:
+    type: autodq
+    model_name: "gpt-4o"
+    endpoint: "https://openaieastus2instance.openai.azure.com/openai/deployments/gpt-4o-cv-chx0812/chat/completions?api-version=2025-01-01-preview"
+    api_version: "2024-12-01-preview"
+    api_key: "990a353da7b44bef8466402378c486cd"
+    max_tokens: 4096
+    temperature: 1.0
+    top_p: 1.0
+
+  etbench:
+    type: etbench
+    sentence_model: "/data/datasets/ETBench/all-MiniLM-L6-v2"
+
+  video-hallucer: 
+    type: video-hallucer
+
+  event-hallusion:
+    type: event-hallusion
+    model_name: "gpt-4o"
+    endpoint: "https://openaieastus2instance.openai.azure.com/openai/deployments/gpt-4o-cv-chx0812/chat/completions?api-version=2025-01-01-preview"
+    api_version: "2024-12-01-preview"
+    api_key: "990a353da7b44bef8466402378c486cd"
+    max_tokens: 128
+    temperature: 1.0
+    top_p: 1.0
+
+  etva:
+    type: etva
+    llm:
+      model_name: "gpt-4o"
+      endpoint: "https://openaieastus2instance.openai.azure.com/openai/deployments/gpt-4o-cv-chx0812/chat/completions?api-version=2025-01-01-preview"
+      api_version: "2024-12-01-preview"
+      api_key: "990a353da7b44bef8466402378c486cd"
+      max_tokens: 150
+      temperature: 0
+      top_p: 0.95
+      repetition_penalty: 1.2
+      stop: ["Example","Input","Task","Entity"]
+    vlm-qwen:
+      type: local
+      model_path: "/data/models/Qwen2.5-VL-7B-Instruct"
+      device: "auto"
+      max_pixels: 460800
+      fps: 1
+      max_new_tokens: 64
+    vlm-tarsier:
+      type: local
+      model_path: "/media/sda/vlm_datasets/Tarsier2-7b-0115"
+      device: "auto"
+      max_new_tokens: 512
+      max_n_frames: 256
+      n_frames: 16
+      max_pixels: 460800 # 1280 * 720 // 2
+      min_pixels: 0
+      max_seq_len: 16384
+      is_training: false  # 会影响：1. 训练和测试时采帧不同；2. 测试时忽略 response。
+      print_data_error: true
+      is_training: false
+      do_image_padding: false
+      do_image_crop: false
+      do_image_resize: false
+      video_sampling_strategy: {'video_sampler_version': 'v1', 'force_frames_n_divisible': 1, 'use_multi_images_for_video': true}
+      prompt: ""
+      train_task: sft
+      temperature: 0
+
+  test-50-ranking:
+    type: test-50-ranking
+    # 两个模型的预测文件路径
+    model_a_predictions: "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/output/qwen25vl_7b/test50_camera/predictions/predictions.json"
+    model_b_predictions: "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/output/qwen25vl_32b/test50_camera/predictions/predictions.json"
+    # 模型名称
+    model_a_name: "modela"
+    model_b_name: "modelb"
+    # GPT-4o 配置（用于评判，会查看视频内容）
+    judge_model: "gpt-4o"
+    num_video_frames: 8  # 每个视频采样的帧数（用于GPT-4o参考）
+    max_concurrent: 5  # 最大并发请求数（默认5，可根据API限制调整）
+    timeout_s: 120  # 单个请求超时时间（秒）
+    model_name: "gpt-4o"
+    endpoint: "https://openaieastus2instance.openai.azure.com/openai/deployments/gpt-4o-cv-chx0812/chat/completions?api-version=2025-01-01-preview"
+    api_version: "2024-12-01-preview"
+    api_key: "990a353da7b44bef8466402378c486cd"
+    max_tokens: 1024
+    temperature: 0
+    top_p: 1.0
+  
+  # Test-50 Dense Caption Ranking Evaluator
+  # 对比详细描述任务的质量（中心元素、设置、运动、视觉风格、叙事）
+  test-50-dense-ranking:
+    type: test-50-dense-ranking
+    # 两个模型的预测文件路径
+    model_a_predictions: "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/output/qwen3vl_8b/test50_dense/predictions/predictions.json"
+    model_b_predictions: "/home/dyvm6xra/dyvm6xrauser04/yuyang/vlm_benchmark/output/qwen25vl_7b/test50_dense/predictions/predictions.json"
+    # 模型名称
+    model_a_name: "modela"
+    model_b_name: "modelb"
+    # GPT-4o 配置（用于评判，会查看视频内容）
+    judge_model: "gpt-4o"
+    num_video_frames: 8  # 每个视频采样的帧数（用于GPT-4o参考）
+    max_concurrent: 5  # 最大并发请求数（默认5，可根据API限制调整）
+    timeout_s: 120  # 单个请求超时时间（秒）
+    model_name: "gpt-4o"
+    endpoint: "https://openaieastus2instance.openai.azure.com/openai/deployments/gpt-4o-cv-chx0812/chat/completions?api-version=2025-01-01-preview"
+    api_version: "2024-12-01-preview"
+    api_key: "990a353da7b44bef8466402378c486cd"
+    max_tokens: 1024
+    temperature: 0
+    top_p: 1.0
+
+logging:
+  level: INFO
+  file: "./logs/benchmark.log"
