@@ -23,7 +23,25 @@ from ..models import wan_video_dit as _wan_video_dit
 # is renamed (or `WanModel` is not exported). Importing it via `from ... import WanModel` then raises:
 #   ImportError: cannot import name 'WanModel' ...
 # To keep the pipeline compatible across these forks, resolve the class dynamically.
-sinusoidal_embedding_1d = _wan_video_dit.sinusoidal_embedding_1d
+def _sinusoidal_embedding_1d_fallback(dim: int, position: torch.Tensor) -> torch.Tensor:
+    """
+    Minimal 1D sinusoidal embedding used by Wan DiT time embedding.
+
+    Some forks of `diffsynth.models.wan_video_dit` do not expose `sinusoidal_embedding_1d`;
+    keep this pipeline importable by providing a local fallback.
+    """
+    sinusoid = torch.outer(
+        position.type(torch.float64),
+        torch.pow(
+            10000,
+            -torch.arange(dim // 2, dtype=torch.float64, device=position.device).div(dim // 2),
+        ),
+    )
+    x = torch.cat([torch.cos(sinusoid), torch.sin(sinusoid)], dim=1)
+    return x.to(position.dtype)
+
+
+sinusoidal_embedding_1d = getattr(_wan_video_dit, "sinusoidal_embedding_1d", _sinusoidal_embedding_1d_fallback)
 
 _WANMODEL_CANDIDATES = (
     "WanModel",          # canonical in this repo
