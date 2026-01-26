@@ -224,6 +224,8 @@ class WanTV2VTrainingModule(DiffusionTrainingModule):
     def __init__(
         self,
         model_paths=None, model_id_with_origin_paths=None,
+        t5_path: str | None = None,
+        vae_path: str | None = None,
         tokenizer_path=None,
         trainable_models=None,
         lora_base_model=None, lora_target_modules="", lora_rank=32, lora_checkpoint=None,
@@ -246,6 +248,27 @@ class WanTV2VTrainingModule(DiffusionTrainingModule):
         if not use_gradient_checkpointing:
             warnings.warn("Gradient checkpointing is detected as disabled. To prevent out-of-memory errors, the training framework will forcibly enable gradient checkpointing.")
             use_gradient_checkpointing = True
+
+        def _resolve_from_arg(arg_path: str, candidates: list[str], label: str) -> str:
+            """
+            Resolve an explicit component path (file or directory).
+            IMPORTANT: we only ever load the resolved *single file*; we do NOT glob for other
+            diffusion_pytorch_model*.safetensors under the given directory.
+            """
+            if not arg_path:
+                raise ValueError(f"{label} path is empty.")
+            if os.path.isfile(arg_path):
+                return arg_path
+            if os.path.isdir(arg_path):
+                for name in candidates:
+                    p = os.path.join(arg_path, name)
+                    if os.path.exists(p):
+                        return p
+                raise FileNotFoundError(
+                    f"Could not find {label} under directory: {arg_path}. "
+                    f"Tried: {candidates}"
+                )
+            raise FileNotFoundError(f"{label} path does not exist: {arg_path}")
         
         # Custom model loading logic for WanVideo folder
         if model_paths and not model_paths.strip().startswith("[") and os.path.isdir(model_paths):
@@ -262,10 +285,44 @@ class WanTV2VTrainingModule(DiffusionTrainingModule):
             if not os.path.exists(t5_file):
                  # Try finding safetensors version if pth not found
                  t5_file = os.path.join(model_paths, "models_t5_umt5-xxl-enc-bf16.safetensors")
+            if not os.path.exists(t5_file):
+                if t5_path is None:
+                    raise FileNotFoundError(
+                        "T5 file not found under the training checkpoint folder. "
+                        "Your checkpoint folder looks like a DiT-only export. "
+                        "Please pass `--t5_path` pointing to the T5 file (or a directory containing it). "
+                        f"Missing: {t5_file}"
+                    )
+                t5_file = _resolve_from_arg(
+                    t5_path,
+                    candidates=[
+                        "models_t5_umt5-xxl-enc-bf16.safetensors",
+                        "models_t5_umt5-xxl-enc-bf16.pth",
+                    ],
+                    label="T5",
+                )
 
             vae_file = os.path.join(model_paths, "Wan2.2_VAE.pth")
             if not os.path.exists(vae_file):
                 vae_file = os.path.join(model_paths, "Wan2.1_VAE.pth")
+            if not os.path.exists(vae_file):
+                if vae_path is None:
+                    raise FileNotFoundError(
+                        "VAE file not found under the training checkpoint folder. "
+                        "Your checkpoint folder looks like a DiT-only export. "
+                        "Please pass `--vae_path` pointing to the VAE file (or a directory containing it). "
+                        f"Missing: {vae_file}"
+                    )
+                vae_file = _resolve_from_arg(
+                    vae_path,
+                    candidates=[
+                        "Wan2.2_VAE.safetensors",
+                        "Wan2.2_VAE.pth",
+                        "Wan2.1_VAE.safetensors",
+                        "Wan2.1_VAE.pth",
+                    ],
+                    label="VAE",
+                )
             
             # Construct model configs manually
             model_configs = [
@@ -755,6 +812,28 @@ def wan_tv2v_parser():
     
     # Model paths
     parser.add_argument("--tokenizer_path", type=str, default=None, help="Path to tokenizer.")
+    parser.add_argument(
+        "--t5_path",
+        type=str,
+        default=None,
+        help=(
+            "Explicit path to T5 weights (file or directory). "
+            "Used when --model_paths points to a DiT-only checkpoint folder that does not contain "
+            "models_t5_umt5-xxl-enc-bf16.(safetensors|pth). "
+            "NOTE: we will ONLY load the resolved T5 file and will NOT glob any diffusion_pytorch_model*.safetensors under this path."
+        ),
+    )
+    parser.add_argument(
+        "--vae_path",
+        type=str,
+        default=None,
+        help=(
+            "Explicit path to VAE weights (file or directory). "
+            "Used when --model_paths points to a DiT-only checkpoint folder that does not contain "
+            "Wan2.(1|2)_VAE.(safetensors|pth). "
+            "NOTE: we will ONLY load the resolved VAE file and will NOT glob any diffusion_pytorch_model*.safetensors under this path."
+        ),
+    )
     
     # Dataset paths
     parser.add_argument("--dataset_csv_paths", type=str, required=True, help="Comma-separated CSV paths for dataset.")
@@ -988,6 +1067,8 @@ if __name__ == "__main__":
     model = WanTV2VTrainingModule(
         model_paths=args.model_paths,
         model_id_with_origin_paths=args.model_id_with_origin_paths,
+        t5_path=getattr(args, "t5_path", None),
+        vae_path=getattr(args, "vae_path", None),
         tokenizer_path=args.tokenizer_path,
         trainable_models=args.trainable_models,
         lora_base_model=args.lora_base_model,
