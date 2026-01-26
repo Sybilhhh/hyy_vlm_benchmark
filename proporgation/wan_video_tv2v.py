@@ -15,7 +15,40 @@ from ..diffusion import FlowMatchScheduler
 from ..core import ModelConfig, gradient_checkpoint_forward
 from ..diffusion.base_pipeline import BasePipeline, PipelineUnit
 
-from ..models.wan_video_dit import WanModel, sinusoidal_embedding_1d
+from typing import TYPE_CHECKING, Any, Type
+from ..models import wan_video_dit as _wan_video_dit
+
+# NOTE:
+# Some downstream deployments carry a slightly different `wan_video_dit.py` where the main DiT class
+# is renamed (or `WanModel` is not exported). Importing it via `from ... import WanModel` then raises:
+#   ImportError: cannot import name 'WanModel' ...
+# To keep the pipeline compatible across these forks, resolve the class dynamically.
+sinusoidal_embedding_1d = _wan_video_dit.sinusoidal_embedding_1d
+
+_WANMODEL_CANDIDATES = (
+    "WanModel",          # canonical in this repo
+    "WanVideoDiT",       # common alternative naming
+    "WanVideoDIT",
+    "WanDiT",
+)
+
+WanModel: Type[Any] | None = None
+for _name in _WANMODEL_CANDIDATES:
+    WanModel = getattr(_wan_video_dit, _name, None)
+    if WanModel is not None:
+        break
+
+if WanModel is None:
+    _available = ", ".join(sorted([k for k in dir(_wan_video_dit) if k.lower().startswith("wan")]))
+    raise ImportError(
+        "Could not resolve Wan DiT model class from `diffsynth.models.wan_video_dit`. "
+        f"Tried: {', '.join(_WANMODEL_CANDIDATES)}. "
+        f"Available (wan*): {_available or '<none>'}."
+    )
+
+if TYPE_CHECKING:
+    # For type-checkers only; at runtime WanModel is resolved dynamically above.
+    from ..models.wan_video_dit import WanModel as WanModel  # pragma: no cover
 from ..models.wan_video_dit_s2v import rope_precompute
 from ..models.wan_video_text_encoder import WanTextEncoder, HuggingfaceTokenizer
 from ..models.wan_video_vae import WanVideoVAE
