@@ -238,6 +238,8 @@ class WanTV2VTrainingModule(DiffusionTrainingModule):
         max_timestep_boundary=1.0,
         min_timestep_boundary=0.0,
         reference_concat_method="channel",  # "channel"
+        use_prepare_cond_latents: bool = True,
+        guide_latents_num: int = 1,
     ):
         super().__init__()
         # Warning
@@ -404,6 +406,11 @@ class WanTV2VTrainingModule(DiffusionTrainingModule):
         self.fp8_models = fp8_models
         self.task = task
         self.reference_concat_method = reference_concat_method  # "channel" or "token"
+        # Use hunyuan-style prepare_cond_latents to build a latent-space timestep mask (first_frame_mask).
+        # This does NOT change DiT input channels; it only controls per-token timesteps when
+        # `dit.seperated_timestep` and `dit.fuse_vae_embedding_in_latents` are enabled.
+        self.use_prepare_cond_latents = bool(use_prepare_cond_latents)
+        self.guide_latents_num = int(guide_latents_num) if guide_latents_num is not None else 1
         
         def debug_loss_wrapper(loss_fn, name, pipe, inputs_shared, inputs_posi, inputs_nega):
             # print(f"\n[DEBUG] === Training Step ({name}) ===")
@@ -626,6 +633,44 @@ class WanTV2VTrainingModule(DiffusionTrainingModule):
         
         # Also pass longcat_video for compatibility
         inputs_shared["longcat_video"] = style_condition
+
+        # ------------------------------------------------------------------
+        # Optional: use prepare_cond_latents (hunyuan_edit style) to build a
+        # latent-space per-frame mask for separated-timestep conditioning.
+        #
+        # In Wan's model_fn_wan_video, `first_frame_mask` (latent-space) controls
+        # which tokens use timestep=0 (clean condition) vs timestep=t (noisy target).
+        # We expose `--guide_latents_num` to condition the first N frames.
+        # ------------------------------------------------------------------
+        if self.use_prepare_cond_latents:
+            try:
+                pipe = self.pipe
+                # Ensure VAE is available on device (vram management may offload it).
+                pipe.load_models_to_device(["vae"])
+                with torch.no_grad():
+                    # Encode target video to latents to get (B, C, T, H, W) shape.
+                    v2 = pipe.preprocess_video(inputs_shared["input_video"])
+                    v2_lat = pipe.vae.encode(v2, device=pipe.device, tiled=False).to(dtype=pipe.torch_dtype, device=pipe.device)
+                    T_lat = int(v2_lat.shape[2])
+                    n = max(0, min(self.guide_latents_num, T_lat))
+                    # multitask_mask: 0 -> condition tokens (t=0), 1 -> target tokens (t=timestep)
+                    multitask_mask = torch.ones((T_lat,), device=v2_lat.device, dtype=torch.long)
+                    if n > 0:
+                        multitask_mask[:n] = 0
+                    cond_plus_mask = prepare_cond_latents(
+                        task_type=task,
+                        cond_latents=None,
+                        latents=v2_lat,
+                        multitask_mask=multitask_mask,
+                        guide_latents_num=0,
+                        empty_v_prob=0.0,
+                    )
+                    inputs_shared["first_frame_mask"] = cond_plus_mask[:, -1:, :, :, :].contiguous()
+            except Exception as e:
+                # Don't hard-fail training if mask preparation fails; fallback to pipeline default.
+                if not hasattr(self, "_warned_prepare_cond_latents"):
+                    self._warned_prepare_cond_latents = True
+                    print(f"[warn] prepare_cond_latents disabled due to error: {e}")
         
         # Parse extra inputs if provided
         inputs_shared = self.parse_extra_inputs(data, self.extra_inputs, inputs_shared)
@@ -727,6 +772,19 @@ def wan_tv2v_parser():
     parser.add_argument("--min_timestep_boundary", type=float, default=0.0, help="Min timestep boundary.")
     parser.add_argument("--initialize_model_on_cpu", default=False, action="store_true", help="Initialize models on CPU.")
     parser.add_argument("--max_frames", type=int, default=81, help="Maximum number of frames for video tasks.")
+    parser.add_argument(
+        "--use_prepare_cond_latents",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Use hunyuan-style prepare_cond_latents to build latent-space first_frame_mask "
+             "(controls separated-timestep conditioning; does NOT change DiT input channels).",
+    )
+    parser.add_argument(
+        "--guide_latents_num",
+        type=int,
+        default=1,
+        help="Number of initial latent frames to treat as clean condition (mask=0) when use_prepare_cond_latents is enabled.",
+    )
     parser.add_argument("--reference_concat_method", type=str, default="hybrid", choices=["channel", "token", "hybrid", "channel_real"],
                        help="Concat method for reference latents (TV2V): 'channel' (time concat), 'token', 'hybrid' (both), or 'channel_real' (true channel concat, 48->96).")
     
@@ -948,6 +1006,8 @@ if __name__ == "__main__":
         max_timestep_boundary=args.max_timestep_boundary,
         min_timestep_boundary=args.min_timestep_boundary,
         reference_concat_method=args.reference_concat_method,
+        use_prepare_cond_latents=args.use_prepare_cond_latents,
+        guide_latents_num=args.guide_latents_num,
     )
     
     # Setup model logger
