@@ -191,6 +191,12 @@ class ModelPool:
         out = []
         for cfg in candidates[:1]:
             cfg2 = dict(cfg)
+            # If we matched a candidate only by (dim, num_layers), its `in_dim` may differ from the
+            # checkpoint (common for TV2V "channel_real" style conditioning which doubles channels).
+            # Patch `extra_kwargs.in_dim` to the inferred value so model instantiation matches the checkpoint.
+            extra2 = dict(cfg.get("extra_kwargs") or {})
+            extra2["in_dim"] = in_dim
+            cfg2["extra_kwargs"] = extra2
             if is_diffusers_like:
                 cfg2.setdefault("state_dict_converter", "diffsynth.utils.state_dict_converters.wan_video_dit.WanVideoDiTFromDiffusers")
             elif has_common_prefix:
