@@ -118,12 +118,33 @@ class ModelPool:
             return any(any(s in k for s in substrings) for k in keys)
 
         # ---- WanVideo DiT inference ----
-        # Detect patch embedding tensor to infer (dim, in_dim)
+        # Detect patch embedding tensor to infer (dim, in_dim).
+        #
+        # Canonical key in this repo ends with `patch_embedding.weight`, but Diffusers / custom exports
+        # may rename it (e.g. `patch_embed.proj.weight`). To keep this robust, fall back to detecting
+        # a Conv3D weight with kernel/stride matching Wan patch embedding: (1, 2, 2).
         patch_key = None
         for k in keys:
             if k.endswith("patch_embedding.weight"):
                 patch_key = k
                 break
+        if patch_key is None:
+            conv3d_candidates = []
+            for k, shape in keys_dict.items():
+                if not (isinstance(shape, (list, tuple)) and len(shape) == 5):
+                    continue
+                # Wan patch embedding uses kernel_size=(1,2,2) so weight has trailing [1,2,2].
+                if shape[2] == 1 and shape[3] == 2 and shape[4] == 2:
+                    conv3d_candidates.append((k, shape))
+            if conv3d_candidates:
+                # Prefer keys that "look like" patch embedding; otherwise pick the largest out_dim.
+                conv3d_candidates.sort(
+                    key=lambda kv: (
+                        ("patch" not in kv[0].lower()),
+                        -int(kv[1][0]),
+                    )
+                )
+                patch_key, _ = conv3d_candidates[0]
         if patch_key is None:
             return []
         patch_shape = keys_dict.get(patch_key)
