@@ -284,6 +284,26 @@ def read_image(path: str, width: int | None, height: int | None) -> Image.Image:
     return img
 
 
+def extract_first_frame_to_png(video_path: str, out_png: str) -> str:
+    """
+    Extract the first frame of a video as a PNG (RGB) using OpenCV.
+    Returns the absolute path to the written PNG.
+    """
+    cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        raise RuntimeError(f"Failed to open video for first-frame extraction: {video_path}")
+    ok, frame = cap.read()
+    cap.release()
+    if not ok or frame is None:
+        raise RuntimeError(f"Failed to read first frame from video: {video_path}")
+    os.makedirs(os.path.dirname(out_png) or ".", exist_ok=True)
+    # cv2.imwrite expects BGR; `frame` is BGR already
+    ok = cv2.imwrite(out_png, frame)
+    if not ok:
+        raise RuntimeError(f"Failed to write png: {out_png}")
+    return os.path.abspath(out_png)
+
+
 @torch.no_grad()
 def tv2v_infer(
     pipe: WanVideoPipeline,
@@ -395,6 +415,13 @@ def parse_args():
     p.add_argument("--csv_path", type=str, default=None, help="TV2V CSV path (batch inference).")
     p.add_argument("--data_root", type=str, default=None, help="Data root to join with relative paths in CSV.")
     p.add_argument("--output_dir", type=str, default="inference_outputs", help="Output dir (batch mode).")
+    p.add_argument(
+        "--cond_frames_dir",
+        type=str,
+        default=None,
+        help="Where to write extracted conditional frames for prop CSVs that provide video2_path instead of img2_path. "
+             "Default: <output_dir>/cond_frames",
+    )
     p.add_argument("--limit", type=int, default=None, help="Optional limit number of rows (batch mode).")
     # Reference concat method
     p.add_argument("--reference_concat_method", type=str, default="channel_real", 
@@ -448,9 +475,9 @@ def main():
     # Batch mode: CSV
     # -----------------------------
     if args.csv_path:
-        if not args.data_root:
-            raise ValueError("--data_root is required when using --csv_path")
         os.makedirs(args.output_dir, exist_ok=True)
+        cond_frames_dir = args.cond_frames_dir or os.path.join(args.output_dir, "cond_frames")
+        os.makedirs(cond_frames_dir, exist_ok=True)
 
         with open(args.csv_path, "r", newline="") as f:
             reader = csv.DictReader(f)
@@ -475,8 +502,14 @@ def main():
             task_type = (row.get("task_type") or row.get("task") or "").strip()
 
             video1 = row.get("video1_path") or row.get("video_path")
-            # Many csvs use editing_instruction; prop csvs may not have it.
-            instruction = row.get("editing_instruction") or row.get("instruction") or row.get("caption") or ""
+            # Prefer short_editing_instruction when available (ditto csv), then fall back.
+            instruction = (
+                row.get("short_editing_instruction")
+                or row.get("editing_instruction")
+                or row.get("instruction")
+                or row.get("caption")
+                or ""
+            )
             video_name = row.get("video_name") or Path(video1 or f"row_{idx}").stem
             if not video1:
                 if rank == 0:
@@ -485,12 +518,39 @@ def main():
 
             in_path = video1
             if not os.path.isabs(in_path):
+                if not args.data_root:
+                    raise ValueError(f"--data_root is required for relative paths (row {idx} video1_path={video1})")
                 in_path = os.path.join(args.data_root, in_path)
 
             # Propagation conditional frame: prefer img2_path if present (dataset prop format).
             img2_path = row.get("img2_path") or row.get("conditional_img_path") or row.get("cond_img_path")
             if img2_path and not os.path.isabs(img2_path):
+                if not args.data_root:
+                    raise ValueError(f"--data_root is required for relative paths (row {idx} img2_path={img2_path})")
                 img2_path = os.path.join(args.data_root, img2_path)
+
+            # If we are doing propagation but only video2_path is available (e.g. data_info_prop.csv),
+            # auto-extract the first frame of video2 as the conditional image.
+            if (task_type.lower() == "prop" or (not task_type and row.get("video2_path"))) and not img2_path:
+                video2 = row.get("video2_path") or row.get("ground_truth_video")
+                if not video2:
+                    if rank == 0:
+                        print(f"[prop] skip row {idx}: missing video2_path (and no img2_path)")
+                    continue
+                v2_path = video2
+                if not os.path.isabs(v2_path):
+                    if not args.data_root:
+                        raise ValueError(f"--data_root is required for relative paths (row {idx} video2_path={video2})")
+                    v2_path = os.path.join(args.data_root, v2_path)
+                # Stable file name per row to avoid collisions under DDP.
+                out_png = os.path.join(cond_frames_dir, f"{video_name}_row{idx:06d}_img2.png")
+                if not os.path.exists(out_png):
+                    try:
+                        extract_first_frame_to_png(v2_path, out_png)
+                    except Exception as e:
+                        print(f"[prop][rank{rank}] failed to extract first frame row {idx} ({v2_path}): {e}")
+                        continue
+                img2_path = os.path.abspath(out_png)
 
             if not task_type:
                 task_type = "prop" if img2_path else "tv2v"
