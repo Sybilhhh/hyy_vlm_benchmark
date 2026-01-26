@@ -272,8 +272,11 @@ def read_video_frames(video_path: str, max_frames: int, width: int | None, heigh
         raise RuntimeError(f"No frames read from video: {video_path}")
 
     if max_frames is not None and len(frames) > max_frames:
-        idx = np.linspace(0, len(frames) - 1, max_frames).round().astype(int).tolist()
-        frames = [frames[i] for i in idx]
+        # IMPORTANT:
+        # Do NOT uniformly resample long videos down to max_frames, as that changes temporal speed
+        # (appears "accelerated") and increases per-step motion, often breaking faces.
+        # Instead, keep a contiguous window and truncate.
+        frames = frames[:max_frames]
     return frames
 
 
@@ -522,6 +525,17 @@ def main():
                     raise ValueError(f"--data_root is required for relative paths (row {idx} video1_path={video1})")
                 in_path = os.path.join(args.data_root, in_path)
 
+            # Control effective generation length (like hunyuan_edit):
+            # if CSV provides a `frames` column, use min(args.max_frames, frames) as max_frames.
+            video_length = args.max_frames
+            row_frames = row.get("frames")
+            if row_frames is not None and str(row_frames).strip() != "":
+                try:
+                    video_length = int(float(row_frames))
+                except Exception:
+                    video_length = args.max_frames
+                video_length = max(1, min(args.max_frames, video_length))
+
             # Propagation conditional frame: prefer img2_path if present (dataset prop format).
             img2_path = row.get("img2_path") or row.get("conditional_img_path") or row.get("cond_img_path")
             if img2_path and not os.path.isabs(img2_path):
@@ -566,7 +580,7 @@ def main():
                     output_path=out_path,
                     height=args.height,
                     width=args.width,
-                    max_frames=args.max_frames,
+                    max_frames=video_length,
                     denoising_strength=args.denoising_strength,
                     cfg_scale=args.cfg_scale,
                     num_inference_steps=args.num_inference_steps,
