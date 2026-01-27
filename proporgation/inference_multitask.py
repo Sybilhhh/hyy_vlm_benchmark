@@ -43,6 +43,7 @@ from safetensors.torch import load_file
 from diffsynth.utils.data import save_video
 from diffsynth.pipelines.wan_video_tv2v import WanVideoPipeline, ModelConfig  # type: ignore
 
+import imageio
 
 DEFAULT_NEGATIVE_PROMPT = (
     "overexposed, low quality, jpeg artifacts, blurry, watermark, subtitles, static, "
@@ -353,11 +354,123 @@ def extract_first_frame_to_png(video_path: str, out_png: str) -> str:
         raise RuntimeError(f"Failed to write png: {out_png}")
     return os.path.abspath(out_png)
 
+def get_bucket_from_video(video_path, max_group=None):
+    # same bucket groups as hunyuan script
+    bucket_groups = [
+        [(480, 848), (544, 720), (640, 640), (720, 544), (848, 480)],
+        [(720, 1280), (832, 1104), (960, 960), (1104, 832), (1280, 720)],
+        [(768, 1360), (880, 1184), (1024, 1024), (1184, 880), (1360, 768)],
+        [(1088, 1920), (1248, 1664), (1440, 1440), (1664, 1248), (1920, 1088)],
+    ]
+    if max_group is not None:
+        bucket_groups = bucket_groups[:max_group]
+    try:
+        reader = imageio.get_reader(video_path)
+        if reader.count_frames() == 0:
+            reader.close()
+            raise ValueError("Video has no frames")
+        first_frame = reader.get_data(0)
+        reader.close()
+        h, w = first_frame.shape[:2]
+    except Exception:
+        # fallback to default small bucket
+        return bucket_groups[0][0]
+    input_pixels = h * w
+    input_ratio = w / h
+    # choose largest group that fits pixels
+    best_group = bucket_groups[0]
+    for group in bucket_groups:
+        rep_h, rep_w = group[2]
+        if rep_h * rep_w <= input_pixels:
+            best_group = group
+        else:
+            break
+    # choose bucket in group closest in aspect ratio
+    best_bucket = min(best_group, key=lambda b: abs((b[1]/b[0]) - input_ratio))
+    return best_bucket
+
+def get_bucket_from_image(image_path, max_group=None):
+    from PIL import Image
+    bucket_groups = [
+        [(480, 848), (544, 720), (640, 640), (720, 544), (848, 480)],
+        [(720, 1280), (832, 1104), (960, 960), (1104, 832), (1280, 720)],
+        [(768, 1360), (880, 1184), (1024, 1024), (1184, 880), (1360, 768)],
+        [(1088, 1920), (1248, 1664), (1440, 1440), (1664, 1248), (1920, 1088)],
+    ]
+    if max_group is not None:
+        bucket_groups = bucket_groups[:max_group]
+    img = Image.open(image_path)
+    w, h = img.size
+    input_pixels = h * w
+    input_ratio = w / h
+    best_group = bucket_groups[0]
+    for group in bucket_groups:
+        rep_h, rep_w = group[2]
+        if rep_h * rep_w <= input_pixels:
+            best_group = group
+        else:
+            break
+    best_bucket = min(best_group, key=lambda b: abs((b[1]/b[0]) - input_ratio))
+    return best_bucket
+
+def get_resolution(args, row, extra_kwargs=None):
+    # If the user explicitly passed --resolution for t2v/t2i, require aspect_ratio (same as hunyuan)
+    if args.task_type in ["t2v", "t2i"]:
+        if args.resolution is not None and args.aspect_ratio is not None:
+            mapping = {"480p":0,"720p":1,"1024":2,"1080p":3}
+            idx = mapping[args.resolution]
+            group = [
+                [(480, 848),(544,720),(640,640),(720,544),(848,480)],
+                [(720,1280),(832,1104),(960,960),(1104,832),(1280,720)],
+                [(768,1360),(880,1184),(1024,1024),(1184,880),(1360,768)],
+                [(1088,1920),(1248,1664),(1440,1440),(1664,1248),(1920,1088)]
+            ][idx]
+            # find bucket by matching aspect_ratio
+            ar = float(args.aspect_ratio.split(":")[0]) / float(args.aspect_ratio.split(":")[1])
+            best_bucket = min(group, key=lambda b: abs((b[1]/b[0]) - ar))
+            return best_bucket, args.aspect_ratio
+        else:
+            raise ValueError("For t2v/t2i when specifying --resolution, also provide --aspect_ratio")
+    # Otherwise, if resolution set but no aspect, infer from reference video/image
+    if args.resolution is not None and args.aspect_ratio is None:
+        # pick reference path depending on task
+        ref = None
+        if args.task_type in ["ti2i"]:
+            ref = extra_kwargs.get("reference_img")
+            if ref is None:
+                raise ValueError("reference image required for ti2i when using --resolution")
+            bucket = get_bucket_from_image(ref, max_group=None)
+            ar = bucket[1] / bucket[0]
+            return bucket, f"{int(ar*1000)}/{1000}"
+        else:
+            ref = extra_kwargs.get("reference_video")
+            if ref is None:
+                raise ValueError("reference video required when using --resolution")
+            bucket = get_bucket_from_video(ref, max_group=None)
+            ar = bucket[1] / bucket[0]
+            return bucket, f"{int(ar*1000)}/{1000}"
+    # Default: if row contains 'bucket' use it; else infer from reference video or image
+    if "bucket" in row and row["bucket"]:
+        b = row["bucket"]
+        h,w = map(int, b.split("_"))
+        return (h,w), f"{w}/{h}"
+    if args.task_type in ["ti2i"]:
+        ref = extra_kwargs.get("reference_img")
+        if ref:
+            bucket = get_bucket_from_image(ref, max_group=None)
+            return bucket, str(bucket[1]) + "/" + str(bucket[0])
+    else:
+        ref = extra_kwargs.get("reference_video")
+        if ref:
+            bucket = get_bucket_from_video(ref, max_group=None)
+            return bucket, str(bucket[1]) + "/" + str(bucket[0])
+    # fallback to args.height/width
+    return (args.height, args.width), f"{args.width}/{args.height}"
 
 @torch.no_grad()
 def tv2v_infer(
     pipe: WanVideoPipeline,
-    video_path: str,
+    video_path: str,                   # video1
     instruction: str,
     output_path: str,
     height: int,
@@ -367,73 +480,83 @@ def tv2v_infer(
     cfg_scale: float,
     num_inference_steps: int,
     seed: int | None,
-    reference_video_path: str | None = None,
-    longcat_image_path: str | None = None,
+    task_type: str = "prop",            # "tv2v" or "prop"
+    video2_path: str | None = None,     # video2 (for tv2v or prop mode 1)
+    edited_image_path: str | None = None,  # edited_image (for prop mode 2)
     reference_concat_method: str = "channel_real",
 ):
     """
-    TV2V / Propagation inference.
-    
-    For propagation (CORRECTED logic matching training):
-    INPUTS:
-      - video_path (video1): SOURCE video (provides structure/motion)
-      - longcat_image_path (video2's first frame): TARGET style (the edited appearance to propagate)
-      - instruction: editing prompt
-    OUTPUT:
-      - video2: generated edited video with propagated style
-    
-    reference_concat_method controls how the condition is fused:
-      - "channel": prepend video2's first frame along time dimension
-      - "token": patchify video2's first frame via dit.ref_conv
-      - "hybrid": conditional_image (video2's 1st frame) → token, reference_video (video1's 1st frame) → channel
-      - "channel_real": channel_real uses video1 (full) as temporal structure (channel concat) + video2[0] as token style (conditional_image)
+    tv2v:
+      - inputs: video1, video2, prompt
+      - use video2 first frame as condition (style), video1 provides structure/motion
+    prop:
+      1) video1 + video2 + prompt: use video2 first frame as condition
+      2) video1 + edited_image + prompt: use edited_image as condition
+      3) video1 + prompt only: use video1 first frame as condition
     """
-    # video1 = input_video (provides structure/motion for generation)
+    # video1 = input video (structure/motion)
     input_frames = read_video_frames(video_path, max_frames=max_frames, width=width, height=height)
-    
-    # Build reference_video and conditional_image based on concat method:
-    # - video2's first frame (longcat_image_path) = target style to propagate
-    # - video1 (input_frames) = structure/motion reference
+
     conditional_image = None
     reference_frames = None
-    longcat_video = None
-    
-    if longcat_image_path is not None:
-        # Propagation: video2's first frame is the target style
-        style_img = read_image(longcat_image_path, width=width, height=height)
+    longcat_video = None  # keep for compatibility with pipeline
+
+    if task_type == "tv2v":
+        if not video2_path:
+            raise ValueError("tv2v requires video2_path")
+        # use first frame of video2 as style
+        style_img = read_video_frames(video2_path, max_frames=1, width=width, height=height)[0]
         longcat_video = [style_img]
-        
-        if reference_concat_method == "hybrid":
-            # Hybrid mode (matching training):
-            # - conditional_image (video2's first frame) → token concat (target style)
-            # - reference_video (video1's first frame) → channel concat (source structure)
+
+        if reference_concat_method == "channel_real":
+            # video1 provides temporal structure (channel concat), video2[0] provides style (token)
+            reference_frames = input_frames
             conditional_image = [style_img]
-            reference_frames = [input_frames[0]] if input_frames else None  # video1's first frame
-        elif reference_concat_method == "channel_real":
-            # Channel-real mode (matching training request):
-            # - reference_video = video1 (FULL) -> temporal structure via channel_real concat
-            # - conditional_image = video2's first frame -> token-concat global style via ref_conv
-            reference_frames = input_frames  # full video1
+        elif reference_concat_method == "hybrid":
+            # token: video2[0], channel: video1[0]
             conditional_image = [style_img]
+            reference_frames = [input_frames[0]] if input_frames else None
         else:
-            # "channel" or "token" mode:
-            # - use video2's first frame as the condition
+            # "channel" or "token": use video2[0] as condition
             conditional_image = [style_img]
             reference_frames = [style_img]
-    elif reference_video_path is not None:
-        reference_frames = read_video_frames(reference_video_path, max_frames=max_frames, width=width, height=height)
-        conditional_image = [reference_frames[0]] if reference_frames else None
+
+    elif task_type == "prop":
+        style_img = None
+        if video2_path is not None:
+            # mode 1: video1 + video2 -> use video2 first frame
+            style_img = read_video_frames(video2_path, max_frames=1, width=width, height=height)[0]
+        elif edited_image_path is not None:
+            # mode 2: video1 + edited_image
+            style_img = read_image(edited_image_path, width=width, height=height)
+        else:
+            # mode 3: video1 only -> use video1 first frame
+            style_img = input_frames[0] if input_frames else None
+
+        if style_img is None:
+            raise ValueError("prop requires at least one valid condition (video2 or edited_image or video1 frame).")
+
+        longcat_video = [style_img]
+
+        if reference_concat_method == "channel_real":
+            reference_frames = input_frames
+            conditional_image = [style_img]
+        elif reference_concat_method == "hybrid":
+            conditional_image = [style_img]
+            reference_frames = [input_frames[0]] if input_frames else None
+        else:
+            conditional_image = [style_img]
+            reference_frames = [style_img]
+
     else:
-        # No explicit condition - use video1's first frame
-        reference_frames = [input_frames[0]] if input_frames else None
-        conditional_image = [input_frames[0]] if input_frames else None
-    
+        raise ValueError(f"Unknown task_type: {task_type}")
+
     out_frames = pipe(
         prompt=instruction,
         negative_prompt=DEFAULT_NEGATIVE_PROMPT,
-        input_video=input_frames,  # video1: provides structure/motion
-        reference_video=reference_frames,  # condition for channel concat
-        conditional_image=conditional_image,  # condition for token concat (if applicable)
+        input_video=input_frames,
+        reference_video=reference_frames,
+        conditional_image=conditional_image,
         reference_concat_method=reference_concat_method,
         longcat_video=longcat_video,
         denoising_strength=denoising_strength,
@@ -506,6 +629,7 @@ def parse_args():
     p.add_argument("--cfg_scale", type=float, default=7.5)
     p.add_argument("--num_inference_steps", type=int, default=50)
     p.add_argument("--seed", type=int, default=None)
+    p.add_argument("--video2_path", type=str, default=None, help="Second video (video2) path for tv2v or prop mode-1.")
     return p.parse_args()
 
 
@@ -605,6 +729,12 @@ def main():
                     video_length = args.max_frames
                 video_length = max(1, min(args.max_frames, video_length))
 
+            video2 = row.get("video2_path") or row.get("video2") or row.get("ref_video_path")
+            if video2 and not os.path.isabs(video2):
+                if not args.data_root:
+                    raise ValueError(f"--data_root is required for relative paths (row {idx} video2_path={video2})")
+                video2 = os.path.join(args.data_root, video2)
+
             # Propagation conditional frame: prefer img2_path if present (dataset prop format).
             img2_path = row.get("img2_path") or row.get("conditional_img_path") or row.get("cond_img_path")
             if img2_path and not os.path.isabs(img2_path):
@@ -641,21 +771,26 @@ def main():
             suffix = "prop" if task_type == "prop" else "tv2v"
             out_path = os.path.join(args.output_dir, f"{video_name}_{suffix}.mp4")
 
+            bucket, aspect_ratio = get_resolution(args, row, {"reference_video": in_path, "reference_img": img2_path, "prop_ref_video": row.get("video2_path")})
+            height, width = bucket
+
             try:
                 tv2v_infer(
                     pipe=pipe,
                     video_path=in_path,
                     instruction=instruction,
                     output_path=out_path,
-                    height=args.height,
-                    width=args.width,
+                    height=height,
+                    width=width,
                     max_frames=video_length,
                     denoising_strength=args.denoising_strength,
                     cfg_scale=args.cfg_scale,
                     num_inference_steps=args.num_inference_steps,
                     seed=args.seed,
                     reference_video_path=in_path,
-                    longcat_image_path=img2_path if task_type == "prop" else None,
+                    task_type=args.task_type,
+                    video2_path=args.video2_path if args.task_type == "tv2v" else None,
+                    edited_image_path=args.img2_path if args.task_type == "prop" else None,
                     reference_concat_method=args.reference_concat_method,
                 )
                 print(f"[{suffix}][rank{rank}] saved: {out_path}")
@@ -674,20 +809,24 @@ def main():
             raise ValueError("Single TV2V requires --instruction.")
         if args.task_type == "prop" and not args.img2_path:
             raise ValueError("Single propagation requires --img2_path (conditional frame).")
+        bucket, aspect_ratio = get_resolution(args, row, {"reference_video": args.video_path, "reference_img": args.img2_path, "prop_ref_video": row.get("video2_path")})
+        height, width = bucket # for resolution
         out_path = tv2v_infer(
             pipe=pipe,
             video_path=args.video_path,
             instruction=args.instruction or "",
             output_path=args.output_path,
-            height=args.height,
-            width=args.width,
+            height=height,
+            width=width,
             max_frames=args.max_frames,
             denoising_strength=args.denoising_strength,
             cfg_scale=args.cfg_scale,
             num_inference_steps=args.num_inference_steps,
             seed=args.seed,
             reference_video_path=args.video_path,
-            longcat_image_path=args.img2_path if args.task_type == "prop" else None,
+            task_type=args.task_type,
+            video2_path=args.video2_path if args.task_type == "tv2v" else None,
+            edited_image_path=args.img2_path if args.task_type == "prop" else None,
             reference_concat_method=args.reference_concat_method,
         )
         if get_rank() == 0:
