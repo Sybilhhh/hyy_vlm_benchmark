@@ -93,28 +93,7 @@ def cleanup_distributed():
 # Model loading / checkpoint
 # -----------------------------
 
-def _resolve_from_arg(arg_path: str, candidates: list[str], label: str) -> str:
-    """
-    Resolve an explicit component path (file or directory).
-    IMPORTANT: we only ever load the resolved *single file*; we do NOT glob for other
-    diffusion_pytorch_model*.safetensors under the given directory.
-    """
-    if not arg_path:
-        raise ValueError(f"{label} path is empty.")
-    if os.path.isfile(arg_path):
-        return arg_path
-    if os.path.isdir(arg_path):
-        for name in candidates:
-            p = os.path.join(arg_path, name)
-            if os.path.exists(p):
-                return p
-        raise FileNotFoundError(
-            f"Could not find {label} under directory: {arg_path}. Tried: {candidates}"
-        )
-    raise FileNotFoundError(f"{label} path does not exist: {arg_path}")
-
-
-def build_model_configs_from_dir(model_dir: str, t5_path: str | None = None, vae_path: str | None = None) -> list[ModelConfig]:
+def build_model_configs_from_dir(model_dir: str) -> list[ModelConfig]:
     model_dir = os.path.abspath(model_dir)
     dit_files = sorted(glob.glob(os.path.join(model_dir, "diffusion_pytorch_model-*.safetensors")))
     if not dit_files:
@@ -128,39 +107,13 @@ def build_model_configs_from_dir(model_dir: str, t5_path: str | None = None, vae
     if not os.path.exists(t5_file):
         t5_file = os.path.join(model_dir, "models_t5_umt5-xxl-enc-bf16.safetensors")
     if not os.path.exists(t5_file):
-        if t5_path is None:
-            raise FileNotFoundError(
-                f"No T5 file found in: {model_dir}. "
-                "If your model_dir is a DiT-only checkpoint folder, pass --t5_path (file or directory)."
-            )
-        t5_file = _resolve_from_arg(
-            t5_path,
-            candidates=[
-                "models_t5_umt5-xxl-enc-bf16.safetensors",
-                "models_t5_umt5-xxl-enc-bf16.pth",
-            ],
-            label="T5",
-        )
+        raise FileNotFoundError(f"No T5 file found in: {model_dir}")
 
     vae_file = os.path.join(model_dir, "Wan2.2_VAE.pth")
     if not os.path.exists(vae_file):
         vae_file = os.path.join(model_dir, "Wan2.1_VAE.pth")
     if not os.path.exists(vae_file):
-        if vae_path is None:
-            raise FileNotFoundError(
-                f"No VAE file found in: {model_dir}. "
-                "If your model_dir is a DiT-only checkpoint folder, pass --vae_path (file or directory)."
-            )
-        vae_file = _resolve_from_arg(
-            vae_path,
-            candidates=[
-                "Wan2.2_VAE.safetensors",
-                "Wan2.2_VAE.pth",
-                "Wan2.1_VAE.safetensors",
-                "Wan2.1_VAE.pth",
-            ],
-            label="VAE",
-        )
+        raise FileNotFoundError(f"No VAE file found in: {model_dir}")
 
     return [
         ModelConfig(path=dit_files),
@@ -453,28 +406,6 @@ def tv2v_infer(
 def parse_args():
     p = argparse.ArgumentParser(description="Pure TV2V/Propagation inference (no Qwen/connector)")
     p.add_argument("--model_dir", type=str, required=True, help="Wan model directory (local).")
-    p.add_argument(
-        "--t5_path",
-        type=str,
-        default=None,
-        help=(
-            "Explicit path to T5 weights (file or directory). "
-            "Used when --model_dir points to a DiT-only checkpoint folder that does not contain "
-            "models_t5_umt5-xxl-enc-bf16.(safetensors|pth). "
-            "NOTE: we will ONLY load the resolved T5 file and will NOT glob any diffusion_pytorch_model*.safetensors under this path."
-        ),
-    )
-    p.add_argument(
-        "--vae_path",
-        type=str,
-        default=None,
-        help=(
-            "Explicit path to VAE weights (file or directory). "
-            "Used when --model_dir points to a DiT-only checkpoint folder that does not contain "
-            "Wan2.(1|2)_VAE.(safetensors|pth). "
-            "NOTE: we will ONLY load the resolved VAE file and will NOT glob any diffusion_pytorch_model*.safetensors under this path."
-        ),
-    )
     p.add_argument("--tokenizer_path", type=str, default=None, help="Tokenizer folder path (optional).")
     p.add_argument("--checkpoint", type=str, default=None, help="Optional .safetensors checkpoint to load (dit only).")
     # Single-item mode
@@ -524,7 +455,7 @@ def main():
         else:
             print(f"[tv2v] video_path={args.video_path}")
 
-    model_configs = build_model_configs_from_dir(args.model_dir, t5_path=args.t5_path, vae_path=args.vae_path)
+    model_configs = build_model_configs_from_dir(args.model_dir)
     tokenizer_config = None if args.tokenizer_path is None else ModelConfig(path=args.tokenizer_path)
 
     pipe = WanVideoPipeline.from_pretrained(
