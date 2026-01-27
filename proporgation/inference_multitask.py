@@ -470,7 +470,7 @@ def get_resolution(args, row, extra_kwargs=None):
 @torch.no_grad()
 def tv2v_infer(
     pipe: WanVideoPipeline,
-    video_path: str,                   # video1
+    video_path: str,
     instruction: str,
     output_path: str,
     height: int,
@@ -480,64 +480,43 @@ def tv2v_infer(
     cfg_scale: float,
     num_inference_steps: int,
     seed: int | None,
-    task_type: str = "prop",            # "tv2v" or "prop"
-    video2_path: str | None = None,     # video2 (for tv2v or prop mode 1)
-    edited_image_path: str | None = None,  # edited_image (for prop mode 2)
+    task_type: str = "tv2v",
+    video2_path: str | None = None,
+    edited_image_path: str | None = None,
     reference_concat_method: str = "channel_real",
 ):
     """
     tv2v:
-      - inputs: video1, video2, prompt
-      - use video2 first frame as condition (style), video1 provides structure/motion
+      - only input video1 + prompt (no reference_video / conditional_image)
     prop:
-      1) video1 + video2 + prompt: use video2 first frame as condition
-      2) video1 + edited_image + prompt: use edited_image as condition
-      3) video1 + prompt only: use video1 first frame as condition
+      - keep your existing prop logic if needed
     """
-    # video1 = input video (structure/motion)
     input_frames = read_video_frames(video_path, max_frames=max_frames, width=width, height=height)
 
     conditional_image = None
     reference_frames = None
-    longcat_video = None  # keep for compatibility with pipeline
+    longcat_video = None
 
     if task_type == "tv2v":
-        if not video2_path:
-            raise ValueError("tv2v requires video2_path")
-        # use first frame of video2 as style
-        style_img = read_video_frames(video2_path, max_frames=1, width=width, height=height)[0]
-        longcat_video = [style_img]
-
-        if reference_concat_method == "channel_real":
-            # video1 provides temporal structure (channel concat), video2[0] provides style (token)
-            reference_frames = input_frames
-            conditional_image = [style_img]
-        elif reference_concat_method == "hybrid":
-            # token: video2[0], channel: video1[0]
-            conditional_image = [style_img]
-            reference_frames = [input_frames[0]] if input_frames else None
-        else:
-            # "channel" or "token": use video2[0] as condition
-            conditional_image = [style_img]
-            reference_frames = [style_img]
+        # IMPORTANT: tv2v only uses video1 + prompt; do NOT pass any condition
+        conditional_image = None
+        reference_frames = None
+        longcat_video = None
 
     elif task_type == "prop":
+        # keep your current prop logic (from last version)
         style_img = None
         if video2_path is not None:
-            # mode 1: video1 + video2 -> use video2 first frame
             style_img = read_video_frames(video2_path, max_frames=1, width=width, height=height)[0]
         elif edited_image_path is not None:
-            # mode 2: video1 + edited_image
             style_img = read_image(edited_image_path, width=width, height=height)
         else:
-            # mode 3: video1 only -> use video1 first frame
             style_img = input_frames[0] if input_frames else None
 
         if style_img is None:
             raise ValueError("prop requires at least one valid condition (video2 or edited_image or video1 frame).")
 
         longcat_video = [style_img]
-
         if reference_concat_method == "channel_real":
             reference_frames = input_frames
             conditional_image = [style_img]
@@ -547,7 +526,6 @@ def tv2v_infer(
         else:
             conditional_image = [style_img]
             reference_frames = [style_img]
-
     else:
         raise ValueError(f"Unknown task_type: {task_type}")
 
@@ -787,10 +765,9 @@ def main():
                     cfg_scale=args.cfg_scale,
                     num_inference_steps=args.num_inference_steps,
                     seed=args.seed,
-                    reference_video_path=in_path,
-                    task_type=args.task_type,
-                    video2_path=args.video2_path if args.task_type == "tv2v" else None,
-                    edited_image_path=args.img2_path if args.task_type == "prop" else None,
+                    task_type=task_type,
+                    video2_path=None if task_type == "tv2v" else video2,
+                    edited_image_path=None if task_type == "tv2v" else img2_path,
                     reference_concat_method=args.reference_concat_method,
                 )
                 print(f"[{suffix}][rank{rank}] saved: {out_path}")
@@ -811,22 +788,21 @@ def main():
             raise ValueError("Single propagation requires --img2_path (conditional frame).")
         bucket, aspect_ratio = get_resolution(args, row, {"reference_video": args.video_path, "reference_img": args.img2_path, "prop_ref_video": row.get("video2_path")})
         height, width = bucket # for resolution
-        out_path = tv2v_infer(
+        tv2v_infer(
             pipe=pipe,
-            video_path=args.video_path,
-            instruction=args.instruction or "",
-            output_path=args.output_path,
+            video_path=in_path,
+            instruction=instruction,
+            output_path=out_path,
             height=height,
             width=width,
-            max_frames=args.max_frames,
+            max_frames=video_length,
             denoising_strength=args.denoising_strength,
             cfg_scale=args.cfg_scale,
             num_inference_steps=args.num_inference_steps,
             seed=args.seed,
-            reference_video_path=args.video_path,
-            task_type=args.task_type,
-            video2_path=args.video2_path if args.task_type == "tv2v" else None,
-            edited_image_path=args.img2_path if args.task_type == "prop" else None,
+            task_type=task_type,
+            video2_path=None if task_type == "tv2v" else video2,
+            edited_image_path=None if task_type == "tv2v" else img2_path,
             reference_concat_method=args.reference_concat_method,
         )
         if get_rank() == 0:
