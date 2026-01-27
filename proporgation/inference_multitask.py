@@ -608,6 +608,20 @@ def parse_args():
     p.add_argument("--num_inference_steps", type=int, default=50)
     p.add_argument("--seed", type=int, default=None)
     p.add_argument("--video2_path", type=str, default=None, help="Second video (video2) path for tv2v or prop mode-1.")
+    p.add_argument(
+        "--resolution",
+        type=str,
+        default=480p,
+        choices=["480p", "720p", "1024", "1080p"],
+        help="Resolution bucket for t2v/t2i (or auto bucket selection)."
+    )
+    p.add_argument(
+        "--aspect_ratio",
+        type=str,
+        default=16:9,
+        choices=["16:9", "9:16", "4:3", "3:4", "1:1"],
+        help="Aspect ratio when --resolution is specified."
+    )
     return p.parse_args()
 
 
