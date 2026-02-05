@@ -150,59 +150,106 @@ def load_video_frames_from_middle(
     middle_frame_index: int,
     frames_before: int,
     frames_after: int,
-    target_size: Tuple[int, int]
+    target_fps=16, max_frames=81, target_size=(480, 848), select_last=False
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """
     Load video frames around middle frame.
     Returns: (before_tensor, middle_tensor, after_tensor)
     Each tensor has shape (1, C, T, H, W) normalized to [-1, 1]
     """
-    vr = decord.VideoReader(video_path, ctx=decord.cpu(0))
-    total_frames = len(vr)
-    original_h, original_w = vr[0].shape[:2]
-    target_h, target_w = target_size
-    
-    # Calculate frame indices
-    start_idx = max(0, middle_frame_index - frames_before)
-    end_idx = min(total_frames, middle_frame_index + frames_after + 1)
-    
-    # Extract frames
-    frame_indices = list(range(start_idx, end_idx))
     try:
-        frames = vr.get_batch(frame_indices).asnumpy()
-    except:
-        frames = vr.get_batch(frame_indices).numpy()
-    del vr
-    
-    # Center crop and resize
-    original_aspect = original_w / original_h
-    target_aspect = target_w / target_h
-    if original_aspect > target_aspect:
-        crop_w = int(original_h * target_aspect)
-        crop_h = original_h
-        start_w = (original_w - crop_w) // 2
-        start_h = 0
-    else:
-        crop_h = int(original_w / target_aspect)
-        crop_w = original_w
-        start_h = (original_h - crop_h) // 2
-        start_w = 0
-    
-    frames = frames[:, start_h:start_h+crop_h, start_w:start_w+crop_w, :]
-    frames = torch.from_numpy(frames).float().permute(0, 3, 1, 2)
-    resize_transform = transforms.Resize((target_h, target_w), antialias=True)
-    frames = resize_transform(frames)
-    frames = frames / 127.5 - 1.0
-    frames = frames.unsqueeze(0).permute(0, 2, 1, 3, 4)  # (1, C, T, H, W)
-    
-    # Split into before, middle, after
-    middle_idx_in_extracted = middle_frame_index - start_idx
-    before_tensor = frames[:, :, :middle_idx_in_extracted, :, :] if middle_idx_in_extracted > 0 else torch.zeros(1, 3, 0, target_h, target_w, dtype=frames.dtype, device=frames.device)
-    middle_tensor = frames[:, :, middle_idx_in_extracted:middle_idx_in_extracted+1, :, :]
-    after_tensor = frames[:, :, middle_idx_in_extracted+1:, :, :] if middle_idx_in_extracted+1 < frames.shape[2] else torch.zeros(1, 3, 0, target_h, target_w, dtype=frames.dtype, device=frames.device)
-    
-    return before_tensor, middle_tensor, after_tensor
+         # Initialize video reader with error handling
+        vr = decord.VideoReader(video_path, ctx=decord.cpu(0))
+        original_fps = vr.get_avg_fps()
+        total_frames = len(vr)
 
+        if total_frames < max_frames:
+            raise ValueError(f"Video {video_path} has only {total_frames} frames, but max_frames is set to {max_frames}")
+            
+        # Get original frame dimensions
+        original_h, original_w = vr[0].shape[:2]
+        
+        if select_last:
+            start = total_frames - max_frames
+            frame_indices = list(range(start, total_frames))
+        else:
+            frame_indices = list(range(min(max_frames, total_frames)))
+
+        
+        # Extract frames with memory safety
+        try:
+            frames = vr.get_batch(frame_indices).asnumpy()  # Shape: (T, H, W, C)
+        except Exception as e:
+            frames = vr.get_batch(frame_indices).numpy()  # Shape: (T, H, W, C)
+        
+        # Immediately delete video reader to free memory
+        del vr
+        
+        # Crop and resize frames
+        target_h, target_w = target_size
+        # Calculate aspect ratios
+        original_aspect = original_w / original_h
+        target_aspect = target_w / target_h
+        
+        # Center crop to match target aspect ratio
+        if original_aspect > target_aspect:
+            # Original is wider, crop width
+            crop_w = int(original_h * target_aspect)
+            crop_h = original_h
+            start_w = (original_w - crop_w) // 2
+            start_h = 0
+        else:
+            # Original is taller, crop height
+            crop_h = int(original_w / target_aspect)
+            crop_w = original_w
+            start_h = (original_h - crop_h) // 2
+            start_w = 0
+            
+        # Apply center crop (before converting to tensor)
+        frames = frames[:, start_h:start_h+crop_h, start_w:start_w+crop_w, :]  # (T, crop_h, crop_w, C)
+        
+        # Convert to torch tensor and change format
+        frames = torch.from_numpy(frames).float()  # (T, crop_h, crop_w, C)
+        frames = frames.permute(0, 3, 1, 2)  # (T, C, crop_h, crop_w)
+        
+        # Resize to target size
+        resize_transform = transforms.Resize((target_h, target_w), antialias=True)
+        frames = resize_transform(frames)
+
+        # Calculate frame indices
+        start_idx = max(0, middle_frame_index - frames_before)
+        end_idx = min(total_frames, middle_frame_index + frames_after + 1)
+        middle_idx = middle_frame_index - start_idx
+        
+        # Get middle frame as numpy array (H, W, 3) for visualization
+        # Convert from (T, C, H, W) to (H, W, C) for middle frame
+        # Values are still in [0, 255] range at this point
+        middle_frame_tensor = frames[middle_idx].permute(1, 2, 0)  # (H, W, C)
+        # Convert to numpy and ensure uint8 format
+        middle_frame_numpy = middle_frame_tensor.clamp(0, 255).cpu().numpy().astype(np.uint8)
+
+        # Normalize to [-1, 1] range (assuming input is in [0, 255])
+        frames = frames / 127.5 - 1.0
+        
+        # Add batch dimension and rearrange to (B, C, T, H, W)
+        frames = frames.unsqueeze(0)  # (1, T, C, H, W)
+        frames = frames.permute(0, 2, 1, 3, 4)  # (1, C, T, H, W)
+        
+        # Split into before, middle, after
+        middle_idx_in_extracted = middle_frame_index - start_idx
+        before_tensor = frames[:, :, :middle_idx_in_extracted+1, :, :] if middle_idx_in_extracted > 0 else torch.zeros(1, 3, 0, target_h, target_w, dtype=frames.dtype, device=frames.device)
+        after_tensor = frames[:, :, middle_idx_in_extracted:, :, :] if middle_idx_in_extracted+1 < frames.shape[2] else torch.zeros(1, 3, 0, target_h, target_w, dtype=frames.dtype, device=frames.device)
+        
+        return before_tensor, after_tensor, middle_frame_numpy
+    except MemoryError as e:
+        print(f"MemoryError loading video {video_path}: {str(e)}")
+        import gc
+        gc.collect()  # Force garbage collection
+        return None, None, None
+    except Exception as e:
+        import traceback
+        print(f"Error loading video {video_path}: {str(e)}, {traceback.format_exc()}")
+        return None, None, None
 
 def load_and_resize_video(
     video_path: str,
@@ -510,7 +557,7 @@ def process_single_sample(
         # Process guide image (middle frame)
         guide_image_path = sample.get("edited_middle_frame_path") or sample.get("edited_first_frame_path")
         if guide_image_path is None:
-            data_dir = "/opt/huawei/explorer-env/dataset/videoedit_new/TestData/testset_20160114/qwen_image_edit_2509"
+            data_dir = "/opt/huawei/explorer-env/dataset/VidGen_data_chy/style-results-visual/style-video-bench-middle-frame-stylized"
             guide_image_path = os.path.join(data_dir, save_name.replace(".mp4", ".png"))
         else:
             guide_image_path = os.path.join(args.video_base_path, guide_image_path)
@@ -520,7 +567,7 @@ def process_single_sample(
         guide_latents = process_vae_latent(guide_image_tensor, pipe.vae)
 
         # Load video frames from middle frame
-        before_tensor, middle_tensor, after_tensor = load_video_frames_from_middle(
+        before_tensor, after_tensor, _ = load_video_frames_from_middle(
             full_video_path,
             middle_frame_index,
             frames_before,
@@ -530,66 +577,49 @@ def process_single_sample(
         
         # Move to device
         before_tensor = before_tensor.to(device=device, dtype=torch.float32)
-        middle_tensor = middle_tensor.to(device=device, dtype=torch.float32)
         after_tensor = after_tensor.to(device=device, dtype=torch.float32)
         
         logger.info(
             f"[Process {process_index}]   Loaded frames - Before: {before_tensor.shape[2]}, "
-            f"Middle: {middle_tensor.shape[2]}, After: {after_tensor.shape[2]}"
+            f"After: {after_tensor.shape[2]}"
         )
 
         # Inference forward (middle -> after)
         output_frames = []
-        
+
+
         if after_tensor.shape[2] > 0:
             # Combine middle + after for forward inference
-            forward_video = torch.cat([middle_tensor, after_tensor], dim=2)
-            forward_latent = process_vae_latent(forward_video, pipe.vae)
-            logger.info(f"[Process {process_index}]   Running forward inference ({forward_video.shape[2]} frames)...")
+            forward_latent = process_vae_latent(after_tensor, pipe.vae)
+            print("[DEBUG] video_latent shape:", forward_latent.shape, flush=True)
+            logger.info(f"[Process {process_index}]   Running forward inference ({forward_latent.shape[2]} frames)...")
             forward_output = pipe(
                 prompt=instruction,
                 video=forward_latent,
                 negative_prompt=args.negative_prompt,
                 height=target_height,
                 width=target_width,
-                num_frames=forward_video.shape[2],
+                num_frames=forward_latent.shape[2],
                 guidance_scale=args.guidance_scale,
                 num_inference_steps=args.num_inference_steps,
                 generator=generator,
                 guide_latents=guide_latents
             ).frames[0]
             output_frames.extend(forward_output)
-        elif middle_tensor.shape[2] > 0:
-            # Only middle frame, use it directly
-            middle_latent = process_vae_latent(middle_tensor, pipe.vae)
-            middle_output = pipe(
-                prompt=instruction,
-                video=middle_latent,
-                negative_prompt=args.negative_prompt,
-                height=target_height,
-                width=target_width,
-                num_frames=1,
-                guidance_scale=args.guidance_scale,
-                num_inference_steps=args.num_inference_steps,
-                generator=generator,
-                guide_latents=guide_latents
-            ).frames[0]
-            output_frames.extend(middle_output)
         
         # Inference backward (before <- middle)
         if before_tensor.shape[2] > 0:
             # Reverse before frames for backward inference (middle -> before, reversed)
             before_reversed = torch.flip(before_tensor, dims=[2])
-            backward_video = torch.cat([middle_tensor, before_reversed], dim=2)
-            backward_latent = process_vae_latent(backward_video, pipe.vae)
-            logger.info(f"[Process {process_index}]   Running backward inference ({backward_video.shape[2]} frames)...")
+            backward_latent = process_vae_latent(before_reversed, pipe.vae)
+            logger.info(f"[Process {process_index}]   Running backward inference ({backward_latent.shape[2]} frames)...")
             backward_output = pipe(
                 prompt=instruction,
                 video=backward_latent,
                 negative_prompt=args.negative_prompt,
                 height=target_height,
                 width=target_width,
-                num_frames=backward_video.shape[2],
+                num_frames=backward_latent.shape[2],
                 guidance_scale=args.guidance_scale,
                 num_inference_steps=args.num_inference_steps,
                 generator=generator,
