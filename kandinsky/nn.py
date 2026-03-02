@@ -8,17 +8,14 @@ from torch.nn.attention.flex_attention import flex_attention
 from .utils import get_freqs, nablaT_v2
 from .attention import SelfAttentionEngine
 
-@torch.compile()
 @torch.autocast(device_type="cuda", dtype=torch.float32)
 def apply_scale_shift_norm(norm, x, scale, shift):
     return (norm(x) * (scale + 1.0) + shift).to(torch.bfloat16)
 
-@torch.compile()
 @torch.autocast(device_type="cuda", dtype=torch.float32)
 def apply_gate_sum(x, out, gate):
     return (x + gate * out).to(torch.bfloat16)
 
-@torch.compile()
 @torch.autocast(device_type="cuda", enabled=False)
 def apply_rotary(x, rope):
     x_ = x.reshape(*x.shape[:-1], -1, 1, 2).to(torch.float32)
@@ -79,7 +76,6 @@ class VisualEmbeddings(nn.Module):
             .permute(0, 2, 4, 1, 3, 5, 6)
             .flatten(3, 6)
         )
-        # Ensure input dtype matches the linear layer weights (e.g., bf16 training)
         x = x.to(dtype=self.in_layer.weight.dtype)
         return self.in_layer(x)
 
@@ -146,7 +142,6 @@ class Modulation(nn.Module):
         self.out_layer.weight.data.zero_()
         self.out_layer.bias.data.zero_()
 
-    @torch.compile()
     @torch.autocast(device_type="cuda", dtype=torch.float32)
     def forward(self, x):
         return self.out_layer(self.activation(x))
@@ -170,7 +165,6 @@ class MultiheadSelfAttentionEnc(nn.Module):
         else:
             self.attn_engine = SelfAttentionEngine(attention_engine)
 
-    @torch.compile()
     def get_qkv(self, x):
         query = self.to_query(x)
         key = self.to_key(x)
@@ -183,13 +177,11 @@ class MultiheadSelfAttentionEnc(nn.Module):
 
         return query, key, value
 
-    @torch.compile()
     def norm_qk(self, q, k):
         q = self.query_norm(q.float()).type_as(q)
         k = self.key_norm(k.float()).type_as(k)
         return q, k
 
-    @torch.compile()
     def scaled_dot_product_attention(self, query, key, value, attention_mask=None):
         args = {"q": query, "k": key, "v": value}
         if attention_mask is not None:
@@ -197,7 +189,6 @@ class MultiheadSelfAttentionEnc(nn.Module):
         out = self.attn_engine.get_attention()(**args)[0].flatten(-2, -1)
         return out
 
-    @torch.compile()
     def out_l(self, x):
         return self.out_layer(x)
 
@@ -227,7 +218,6 @@ class MultiheadSelfAttentionDec(nn.Module):
 
         self.attn_engine = SelfAttentionEngine(attention_engine)
 
-    @torch.compile()
     def get_qkv(self, x):
         query = self.to_query(x)
         key = self.to_key(x)
@@ -239,13 +229,11 @@ class MultiheadSelfAttentionDec(nn.Module):
         value = value.reshape(*shape, self.num_heads, -1)
         return query, key, value
 
-    @torch.compile()
     def norm_qk(self, q, k):
         q = self.query_norm(q.float()).type_as(q)
         k = self.key_norm(k.float()).type_as(k)
         return q, k
 
-    @torch.compile()
     def attention(self, query, key, value):
         out = self.attn_engine.get_attention()(
             q=query,
@@ -253,7 +241,6 @@ class MultiheadSelfAttentionDec(nn.Module):
             v=value)[0].flatten(-2, -1)
         return out
 
-    @torch.compile(mode="max-autotune-no-cudagraphs", dynamic=True)
     def nabla(self, query, key, value, sparse_params=None):
         query = query.transpose(1, 2).contiguous()
         key = key.transpose(1, 2).contiguous()
@@ -277,7 +264,6 @@ class MultiheadSelfAttentionDec(nn.Module):
         out = out[0].flatten(-2, -1)
         return out
 
-    @torch.compile()
     def out_l(self, x):
         return self.out_layer(x)
 
@@ -316,7 +302,6 @@ class MultiheadCrossAttention(nn.Module):
         else:
             self.attn_engine = SelfAttentionEngine(attention_engine)
 
-    @torch.compile()
     def get_qkv(self, x, cond):
         query = self.to_query(x)
         key = self.to_key(cond)
@@ -329,13 +314,11 @@ class MultiheadCrossAttention(nn.Module):
 
         return query, key, value
 
-    @torch.compile()
     def norm_qk(self, q, k):
         q = self.query_norm(q.float()).type_as(q)
         k = self.key_norm(k.float()).type_as(k)
         return q, k
 
-    @torch.compile()
     def attention(self, query, key, value, attention_mask=None):
         args = {"q": query, "k": key, "v": value}
         if attention_mask is not None:
@@ -343,7 +326,6 @@ class MultiheadCrossAttention(nn.Module):
         out = self.attn_engine.get_attention()(**args)[0].flatten(-2, -1)
         return out
 
-    @torch.compile()
     def out_l(self, x):
         return self.out_layer(x)
 
@@ -363,7 +345,6 @@ class FeedForward(nn.Module):
         self.activation = nn.GELU()
         self.out_layer = nn.Linear(ff_dim, dim, bias=False)
 
-    @torch.compile()
     def forward(self, x):
         return self.out_layer(self.activation(self.in_layer(x)))
 
