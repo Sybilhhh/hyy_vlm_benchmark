@@ -185,17 +185,30 @@ class DiffusionTransformer3D(nn.Module):
         visual_embed, visual_shape, to_fractal, visual_rope = self.before_visual_transformer_blocks(
             visual_embed, visual_rope_pos, scale_factor, sparse_params)
 
-        # Disable gradient checkpointing here to avoid metadata mismatch errors
-        # with torch.compile + mixed precision; always run blocks normally.
         for visual_transformer_block in self.visual_transformer_blocks:
-            visual_embed = visual_transformer_block(
-                visual_embed,
-                text_embed,
-                time_embed,
-                visual_rope,
-                sparse_params,
-                attention_mask,
-            )
+            if self._gradient_checkpointing and self.training:
+                # Run checkpoint without torch.compile so forward and recompute have identical
+                # tensor metadata (avoids CheckpointError with bf16 + dynamo).
+                with torch._dynamo.disable():
+                    visual_embed = torch_checkpoint(
+                        visual_transformer_block,
+                        visual_embed,
+                        text_embed,
+                        time_embed,
+                        visual_rope,
+                        sparse_params,
+                        attention_mask,
+                        use_reentrant=True,
+                    )
+            else:
+                visual_embed = visual_transformer_block(
+                    visual_embed,
+                    text_embed,
+                    time_embed,
+                    visual_rope,
+                    sparse_params,
+                    attention_mask,
+                )
 
         x = self.after_blocks(visual_embed, visual_shape, to_fractal, text_embed, time_embed)
         return x
