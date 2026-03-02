@@ -370,17 +370,9 @@ def main():
     dit.train()
     dit.to(dtype=torch.bfloat16)
 
-    # Skip DiT gradient checkpointing when using bf16: it triggers CheckpointError with
-    # torch.compile + non-reentrant checkpoint (recomputed tensor metadata mismatch).
     if args.gradient_checkpointing:
-        if args.mixed_precision == "bf16":
-            logger.warning(
-                "gradient_checkpointing is disabled for bf16 (incompatible with this DiT); "
-                "training will use more VRAM."
-            )
-        else:
-            dit.gradient_checkpointing_enable()
-            logger.info("Gradient checkpointing enabled")
+        dit.gradient_checkpointing_enable()
+        logger.info("Gradient checkpointing enabled")
 
     # ---- Dataset ----
     logger.info(f"Loading dataset from {args.csv_path}")
