@@ -187,11 +187,12 @@ class DiffusionTransformer3D(nn.Module):
 
         for visual_transformer_block in self.visual_transformer_blocks:
             if self._gradient_checkpointing and self.training:
-                # Run the block inside dynamo.disable() so both forward and recompute
-                # use the same eager path (avoids CheckpointError from metadata mismatch).
+                # Run block with dynamo disabled + same autocast as training so forward and
+                # recompute have identical tensor metadata (avoids CheckpointError).
                 def _run_block(vis_embed, text_embed, time_embed, visual_rope, sparse_params, attention_mask, _block=visual_transformer_block):
                     with torch._dynamo.disable():
-                        return _block(vis_embed, text_embed, time_embed, visual_rope, sparse_params, attention_mask)
+                        with torch.amp.autocast(device_type="cuda", dtype=torch.bfloat16):
+                            return _block(vis_embed, text_embed, time_embed, visual_rope, sparse_params, attention_mask)
                 visual_embed = torch_checkpoint(
                     _run_block,
                     visual_embed,
