@@ -438,7 +438,7 @@ def get_unified_pipeline(
     quantized_qwen: bool = False,
     text_token_padding: bool = False,
     attention_engine: str = "auto",
-    allow_channel_expansion: bool = True,
+    allow_channel_expansion: bool = True
 ):
     """Load a Kandinsky5UnifiedPipeline with a single DiT, one HunyuanVideo 3D VAE, and text encoders."""
     if not isinstance(device_map, dict):
