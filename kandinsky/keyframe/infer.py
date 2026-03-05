@@ -37,12 +37,15 @@ import csv
 import logging
 import os
 import traceback
+from collections import Counter
+from pathlib import Path
 
 import torch
 from omegaconf import OmegaConf
 from PIL import Image
 
 from kandinsky.utils import get_unified_pipeline
+from kandinsky.unified_pipeline import SUPPORTED_TASK_TYPES
 
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
@@ -50,6 +53,66 @@ logging.basicConfig(
     level=logging.INFO,
 )
 logger = logging.getLogger(__name__)
+
+BUCKET_GROUPS = [
+    [(480, 848), (544, 720), (640, 640), (720, 544), (848, 480)],
+    [(720, 1280), (832, 1104), (960, 960), (1104, 832), (1280, 720)],
+    [(768, 1360), (880, 1184), (1024, 1024), (1184, 880), (1360, 768)],
+    [(1088, 1920), (1248, 1664), (1440, 1440), (1664, 1248), (1920, 1088)],
+]
+STANDARD_FRAME_COUNTS = [49, 81, 121]
+
+
+def get_video_info(video_path):
+    """Return (height, width, num_frames, fps) using decord."""
+    import decord
+
+    decord.bridge.set_bridge("torch")
+    vr = decord.VideoReader(video_path)
+    h, w = vr[0].shape[0], vr[0].shape[1]
+    n = len(vr)
+    fps = vr.get_avg_fps()
+    return h, w, n, fps
+
+
+def get_bucket(h, w, max_group=None):
+    """Lucy/Hunyuan-style: pick resolution bucket by pixels + aspect ratio."""
+    if h == 0 or w == 0:
+        return (480, 848)
+    groups = BUCKET_GROUPS[:max_group] if max_group is not None else BUCKET_GROUPS
+    input_pixels = h * w
+    input_ratio = w / h
+    best_group = groups[0]
+    for group in groups:
+        rep_h, rep_w = group[2]
+        if rep_h * rep_w <= input_pixels:
+            best_group = group
+        else:
+            break
+    best_bucket = None
+    min_ratio_diff = float("inf")
+    for bucket_h, bucket_w in best_group:
+        diff = abs((bucket_w / bucket_h) - input_ratio)
+        if diff < min_ratio_diff:
+            min_ratio_diff = diff
+            best_bucket = (bucket_h, bucket_w)
+    return best_bucket or (480, 848)
+
+
+def get_target_frames(num_frames, frame_mode="auto"):
+    """Lucy-style target frame count (49/81/121 or nearest 4k+1)."""
+    if frame_mode == "49":
+        return 49
+    if frame_mode == "81":
+        return 81
+    if frame_mode == "nearest":
+        k = max(0, round((num_frames - 1) / 4))
+        return max(1, min(4 * k + 1, 121))
+    if abs(num_frames - 49) <= abs(num_frames - 81):
+        return 49
+    if num_frames < 121:
+        return 81
+    return 81
 
 
 def _get_dist_info():
@@ -125,6 +188,10 @@ def run_csv_rows_with_pipeline(
     width=None,
     expand_prompts=False,
     max_samples=None,
+    guide_image_base_path=None,
+    use_prop_bucket=False,
+    frame_mode="auto",
+    group_pixels=None,
     rank=0,
     world_size=1,
 ):
@@ -145,6 +212,7 @@ def run_csv_rows_with_pipeline(
     my_rows = [all_rows[i] for i in my_indices]
 
     total = len(all_rows)
+    task_counter = Counter()
     logger.info(
         f"[rank {rank}/{world_size}] Running inference on "
         f"{len(my_rows)}/{total} samples from {csv_path}"
@@ -152,8 +220,9 @@ def run_csv_rows_with_pipeline(
 
     for local_idx, (orig_idx, row) in enumerate(zip(my_indices, my_rows)):
         task = _resolve_task(row, fallback_task)
+        task_counter[task] += 1
 
-        # Video-style outputs for t2v / tv2v / prop / i2v
+        # Video-style outputs for t2v / tv2v / prop / i2v / keyframe
         ext = ".mp4" if task in ("t2v", "tv2v", "prop", "i2v", "keyframe") else ".png"
         save_path = os.path.join(output_dir, f"{orig_idx:04d}{ext}")
 
@@ -172,35 +241,104 @@ def run_csv_rows_with_pipeline(
             video_path = row.get("video_path", "") or row.get("video1_path", "")
             if data_root and video_path and not os.path.isabs(video_path):
                 video_path = os.path.join(data_root, video_path)
+            if task == "prop":
+                if not video_path or not os.path.isfile(video_path):
+                    logger.error(
+                        f"[rank {rank}] prop requires an existing video_path/video1_path. "
+                        f"Skip sample {orig_idx}: missing source video {video_path}"
+                    )
+                    continue
 
         image_path = None
         image_obj = None  # PIL Image when extracted from video
-        if task in ("ti2i", "prop", "i2v", "keyframe"):
+        if task in ("ti2i", "i2v", "keyframe"):
             # ti2i: source image, or a single-frame video path
             image_path = row.get("image_path", "") or row.get("guided_image_path", "") or row.get("guide_image_path", "")
             if data_root and image_path and not os.path.isabs(image_path):
                 image_path = os.path.join(data_root, image_path)
+
+        guide_image_path = None
+        guide_video_path = None
+        if task == "prop":
+            guide_image_path = row.get("guide_image_path", "")
+            if not guide_image_path and guide_image_base_path:
+                # Lucy-style: use save_name or video stem to form guide image name
+                save_name = row.get("save_name", Path(row.get("video_path", "out")).stem + ".png")
+                if not save_name.lower().endswith(".png"):
+                    save_name = save_name + ".png"
+                guide_image_path = os.path.join(guide_image_base_path, save_name)
+            if guide_image_path and not os.path.isabs(guide_image_path) and data_root:
+                guide_image_path = os.path.join(data_root, guide_image_path)
+            if not guide_image_path or not os.path.isfile(guide_image_path):
+                guide_video_path = row.get("video2_path", "")
+                if guide_video_path and data_root and not os.path.isabs(guide_video_path):
+                    guide_video_path = os.path.join(data_root, guide_video_path)
+                if not guide_video_path or not os.path.isfile(guide_video_path):
+                    logger.error(
+                        f"[rank {rank}] prop requires guide_image_path or video2_path (Lucy/Hunyuan-style). "
+                        f"Skip sample {orig_idx}: missing"
+                    )
+                    continue
+                guide_image_path = None
+
+        # Lucy/Hunyuan-style prop bucket (resolution) from source video
+        prop_height, prop_width = height, width
+        if task == "prop" and use_prop_bucket and video_path and (height is None or width is None):
+            try:
+                vh, vw, nf, _ = get_video_info(video_path)
+                prop_height, prop_width = get_bucket(vh, vw, max_group=group_pixels)
+                nf_use = nf
+                if row.get("frames") not in (None, ""):
+                    try:
+                        nf_use = min(nf, int(row["frames"]))
+                    except (ValueError, TypeError):
+                        pass
+                prop_num_frames = get_target_frames(nf_use, frame_mode)
+                logger.info(
+                    f"[rank {rank}] Lucy-style prop bucket: video {vh}x{vw} {nf}f -> "
+                    f"bucket {prop_height}x{prop_width} {prop_num_frames}f (target)"
+                )
+            except Exception as e:
+                logger.warning(f"[rank {rank}] use_prop_bucket failed: {e}, using defaults")
+                prop_height, prop_width = height, width
+        effective_height = prop_height if task == "prop" else height
+        effective_width = prop_width if task == "prop" else width
 
         logger.info(
             f"[rank {rank}][{local_idx+1}/{len(my_rows)}] task={task} "
             f"text={text[:80]}{'...' if len(text) > 80 else ''}"
         )
 
+        if task == "prop":
+            logger.info(
+                f"[rank {rank}] Paths for sample {orig_idx}: "
+                f"video_path={video_path}, image_path={image_path}, "
+                f"guide_image_path={guide_image_path}, save_path={save_path}"
+            )
+
         try:
+            extra_kwargs = {}
+            if task == "prop":
+                if guide_image_path:
+                    extra_kwargs["guide_image"] = guide_image_path
+                else:
+                    extra_kwargs["guide_video"] = guide_video_path
+
             pipeline(
                 text=text,
                 task_type=task,
                 video=video_path,
-                image=image_path,
+                image=image_path if task != "prop" else None,
                 time_length=time_length,
-                height=height,
-                width=width,
+                height=effective_height,
+                width=effective_width,
                 seed=seed,
                 num_steps=num_steps,
                 guidance_weight=guidance_weight,
                 expand_prompts=expand_prompts,
                 save_path=save_path,
-                progress=True
+                progress=True,
+                **extra_kwargs,
             )
             logger.info(f"  Saved: {save_path}")
         except Exception as e:
@@ -211,6 +349,9 @@ def run_csv_rows_with_pipeline(
             continue
 
     logger.info(f"[rank {rank}/{world_size}] Done. Outputs in {output_dir}")
+    logger.info(
+        f"[rank {rank}/{world_size}] Task stats (rows per task): {dict(task_counter)}"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -234,6 +375,10 @@ def run_inference_on_csv(
     text_token_padding=False,
     expand_prompts=False,
     max_samples=None,
+    guide_image_base_path=None,
+    use_prop_bucket=False,
+    frame_mode="auto",
+    group_pixels=None,
     rank=0,
     local_rank=0,
     world_size=1,
@@ -279,6 +424,10 @@ def run_inference_on_csv(
     if os.path.exists(tmp_conf_path):
         os.remove(tmp_conf_path)
     logger.info(f"[rank {rank}/{world_size}] Pipeline loaded on {device}")
+    try:
+        logger.info(f"Pipeline SUPPORTED_TASK_TYPES: {SUPPORTED_TASK_TYPES}")
+    except Exception:
+        pass
 
     run_csv_rows_with_pipeline(
         pipeline=pipeline,
@@ -294,6 +443,10 @@ def run_inference_on_csv(
         width=width,
         expand_prompts=expand_prompts,
         max_samples=max_samples,
+        guide_image_base_path=guide_image_base_path,
+        use_prop_bucket=use_prop_bucket,
+        frame_mode=frame_mode,
+        group_pixels=group_pixels,
         rank=rank,
         world_size=world_size,
     )
@@ -338,12 +491,34 @@ def parse_args():
     parser.add_argument("--expand_prompts", action="store_true")
     parser.add_argument("--max_samples", type=int, default=None)
 
+    parser.add_argument("--guide_image_base_path", type=str, default=None,
+                        help="For prop: base dir for guide images; path = base_path / save_name (e.g. xxx.png)")
+    parser.add_argument("--use_prop_bucket", action="store_true",
+                        help="For prop: Lucy-style resolution from source video (bucket)")
+    parser.add_argument("--frame_mode", type=str, default="auto",
+                        choices=["49", "81", "auto", "nearest"],
+                        help="When use_prop_bucket: target frame count mode (logging only in this script)")
+    parser.add_argument("--group_pixels", type=int, default=None,
+                        help="Hunyuan-style: max bucket group (1-4) to use; limits resolution")
+
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
     rank, local_rank, world_size = _get_dist_info()
+
+    # Suppress heavy HuggingFace/transformers loading progress (e.g. "Loading weights")
+    # so that logs remain compact during multi-GPU runs.
+    try:
+        import transformers
+
+        transformers.utils.logging.set_verbosity_error()
+        transformers.utils.logging.disable_progress_bar()
+        # Also disable HF Hub download progress bars just in case.
+        os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
+    except Exception:
+        pass
 
     run_inference_on_csv(
         conf_path=args.conf_path,
@@ -362,6 +537,10 @@ def main():
         text_token_padding=args.text_token_padding,
         expand_prompts=args.expand_prompts,
         max_samples=args.max_samples,
+        guide_image_base_path=args.guide_image_base_path,
+        use_prop_bucket=args.use_prop_bucket,
+        frame_mode=args.frame_mode,
+        group_pixels=args.group_pixels,
         rank=rank,
         local_rank=local_rank,
         world_size=world_size,
