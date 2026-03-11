@@ -395,6 +395,7 @@ class Kandinsky5UnifiedPipeline:
         if task_type in ("prop", "keyframe"):
             if video is None:
                 raise ValueError("prop/keyframe requires a 'video' argument")
+            # 至少需要 guide_image 或 guide_video 之一；两个都为 None 才报错
             if guide_image is None and guide_video is None:
                 raise ValueError("prop/keyframe requires a 'guide_image' or 'guide_video' argument (keyframe for first frame)")
 
@@ -483,7 +484,7 @@ class Kandinsky5UnifiedPipeline:
                 video, height // spatial_div, width // spatial_div, num_frames,
             )
             # Keyframe image latent (T=1)
-            key_latent, _ = self._encode_source_image(
+            guide_latent, _ = self._encode_source_image(
                 guide_image, height // spatial_div, width // spatial_div,
             )
             latent_T = cond_latent.shape[0]
@@ -502,12 +503,9 @@ class Kandinsky5UnifiedPipeline:
             else:
                 keyframe_idx = latent_T // 2
             keyframe_idx = max(0, min(latent_T - 1, int(keyframe_idx)))
-            cond_latent[keyframe_idx : keyframe_idx + 1] = key_latent.to(
+            cond_latent[keyframe_idx : keyframe_idx + 1] = guide_latent.to(
                 device=cond_latent.device, dtype=cond_latent.dtype
-            )  # TODO:check this
-            guide_latent, _ = self._encode_source_image(
-                guide_image, height // spatial_div, width // spatial_div,
-            )
+            )  # TODO:check this, check dim
             if self.offload:
                 self.vae.to("cpu")
 
