@@ -241,49 +241,35 @@ def run_csv_rows_with_pipeline(
             video_path = row.get("video_path", "") or row.get("video1_path", "")
             if data_root and video_path and not os.path.isabs(video_path):
                 video_path = os.path.join(data_root, video_path)
-            if task == "prop":
-                if not video_path or not os.path.isfile(video_path):
-                    logger.error(
-                        f"[rank {rank}] prop requires an existing video_path/video1_path. "
-                        f"Skip sample {orig_idx}: missing source video {video_path}"
-                    )
-                    continue
+            if not video_path or not os.path.isfile(video_path):
+                logger.error(
+                    f"[rank {rank}] prop requires an existing video_path/video1_path. "
+                    f"Skip sample {orig_idx}: missing source video {video_path}"
+                )
+                continue
 
         image_path = None
-        image_obj = None  # PIL Image when extracted from video
-        if task in ("ti2i", "i2v", "keyframe"):
+        if task in ("ti2i", "i2v"):
             # ti2i: source image, or a single-frame video path
             image_path = row.get("image_path", "") or row.get("guided_image_path", "") or row.get("guide_image_path", "")
             if data_root and image_path and not os.path.isabs(image_path):
                 image_path = os.path.join(data_root, image_path)
 
         guide_image_path = None
-        guide_video_path = None
-        if task == "prop":
+        if task in ("prop", "keyframe"):  
             guide_image_path = row.get("guide_image_path", "")
-            if not guide_image_path and guide_image_base_path:
-                # Lucy-style: use save_name or video stem to form guide image name
-                save_name = row.get("save_name", Path(row.get("video_path", "out")).stem + ".png")
-                if not save_name.lower().endswith(".png"):
-                    save_name = save_name + ".png"
-                guide_image_path = os.path.join(guide_image_base_path, save_name)
             if guide_image_path and not os.path.isabs(guide_image_path) and data_root:
                 guide_image_path = os.path.join(data_root, guide_image_path)
-            if not guide_image_path or not os.path.isfile(guide_image_path):
-                guide_video_path = row.get("video2_path", "")
-                if guide_video_path and data_root and not os.path.isabs(guide_video_path):
-                    guide_video_path = os.path.join(data_root, guide_video_path)
-                if not guide_video_path or not os.path.isfile(guide_video_path):
-                    logger.error(
+            else:
+                logger.error(
                         f"[rank {rank}] prop requires guide_image_path or video2_path (Lucy/Hunyuan-style). "
                         f"Skip sample {orig_idx}: missing"
                     )
-                    continue
-                guide_image_path = None
+                
 
         # Lucy/Hunyuan-style prop bucket (resolution) from source video
         prop_height, prop_width = height, width
-        if task == "prop" and use_prop_bucket and video_path and (height is None or width is None):
+        if task in ("prop", "keyframe") and use_prop_bucket and video_path and (height is None or width is None):
             try:
                 vh, vw, nf, _ = get_video_info(video_path)
                 prop_height, prop_width = get_bucket(vh, vw, max_group=group_pixels)
@@ -309,7 +295,7 @@ def run_csv_rows_with_pipeline(
             f"text={text[:80]}{'...' if len(text) > 80 else ''}"
         )
 
-        if task == "prop":
+        if task in ("prop", "keyframe"):
             logger.info(
                 f"[rank {rank}] Paths for sample {orig_idx}: "
                 f"video_path={video_path}, image_path={image_path}, "
@@ -318,17 +304,14 @@ def run_csv_rows_with_pipeline(
 
         try:
             extra_kwargs = {}
-            if task == "prop":
-                if guide_image_path:
-                    extra_kwargs["guide_image"] = guide_image_path
-                else:
-                    extra_kwargs["guide_video"] = guide_video_path
+            if task in ("prop", "keyframe"):
+                extra_kwargs["guide_image"] = guide_image_path
 
             pipeline(
                 text=text,
                 task_type=task,
                 video=video_path,
-                image=image_path if task != "prop" else None,
+                image=image_path ,
                 time_length=time_length,
                 height=effective_height,
                 width=effective_width,
