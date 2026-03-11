@@ -673,7 +673,7 @@ def generate_unified_sample(
 
     # Prop: fix first frame to guide image and zero condition at first frame (Lucy-style inference_prop)
     prop_first_frame_latent = None
-    if guide_latent is not None:
+    if task_type == "prop" and guide_latent is not None:
         # img: (bs * duration, H, W, 33) = [noise(16) | cond(16) | mask(1)]
         # guide_latent: (1, H, W, 16) or (1, 1, H, W, 16)
         g = guide_latent.to(device=img.device, dtype=img.dtype)
