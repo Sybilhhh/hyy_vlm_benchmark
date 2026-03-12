@@ -469,8 +469,9 @@ class Kandinsky5UnifiedPipeline:
         elif task_type == "tv2v":
             if self.offload:
                 self.vae.to(self.device_map["vae"])
+            pixel_frames_needed = (num_frames - 1) * 4 + 1
             cond_latent = self._encode_source_video(
-                video, height // spatial_div, width // spatial_div, num_frames,
+                video, height // spatial_div, width // spatial_div, pixel_frames_needed,
             )
             if self.offload:
                 self.vae.to("cpu")
@@ -480,9 +481,11 @@ class Kandinsky5UnifiedPipeline:
             # overwrite a single temporal slice with the keyframe image latent.
             if self.offload:
                 self.vae.to(self.device_map["vae"])
-            # Source video latent (conditioning backbone)
+            # num_frames is the LATENT temporal dimension; we need enough PIXEL
+            # frames so that VAE 4x temporal compression produces num_frames latents.
+            pixel_frames_needed = (num_frames - 1) * 4 + 1
             cond_latent = self._encode_source_video(
-                video, height // spatial_div, width // spatial_div, num_frames,
+                video, height // spatial_div, width // spatial_div, pixel_frames_needed,
             )
             # Keyframe image latent (T=1)
             guide_latent, _ = self._encode_source_image(
@@ -540,8 +543,9 @@ class Kandinsky5UnifiedPipeline:
             # - encode guide image/video first frame as a separate guide_latent
             if self.offload:
                 self.vae.to(self.device_map["vae"])
+            pixel_frames_needed = (num_frames - 1) * 4 + 1
             cond_latent = self._encode_source_video(
-                video, height // spatial_div, width // spatial_div, num_frames,
+                video, height // spatial_div, width // spatial_div, pixel_frames_needed,
             )
             guide_img = guide_image
             if guide_img is None and guide_video is not None:
