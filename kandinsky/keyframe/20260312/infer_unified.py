@@ -275,8 +275,9 @@ def run_csv_rows_with_pipeline(
                 continue
                 
 
-        # Lucy/Hunyuan-style prop bucket (resolution) from source video
+        # Lucy/Hunyuan-style prop bucket (resolution + frame count) from source video
         prop_height, prop_width = height, width
+        prop_num_frames = None
         if task in ("prop", "keyframe") and use_prop_bucket and video_path and (height is None or width is None):
             try:
                 vh, vw, nf, _ = get_video_info(video_path)
@@ -314,6 +315,8 @@ def run_csv_rows_with_pipeline(
             extra_kwargs = {}
             if task in ("prop", "keyframe"):
                 extra_kwargs["guide_image"] = guide_image_path
+                if prop_num_frames is not None:
+                    extra_kwargs["num_pixel_frames"] = prop_num_frames
 
             pipeline(
                 text=text,
