@@ -353,6 +353,7 @@ class Kandinsky5UnifiedPipeline:
         guide_image: Optional[Union[str, Image.Image]] = None,
         guide_video: Optional[str] = None,
         time_length: int = 5,
+        num_pixel_frames: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
         seed: Optional[int] = None,
@@ -438,7 +439,10 @@ class Kandinsky5UnifiedPipeline:
                     if width is None:
                         width = 832
         else:
-            num_frames = 1 if time_length == 0 else time_length * 24 // 4 + 1
+            if num_pixel_frames is not None:
+                num_frames = (num_pixel_frames - 1) // 4 + 1
+            else:
+                num_frames = 1 if time_length == 0 else time_length * 24 // 4 + 1
             if width is None:
                 width = 768 if resolution_key == 512 else 1024
             if height is None:
