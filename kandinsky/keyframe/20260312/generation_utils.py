@@ -699,15 +699,8 @@ def generate_unified_sample(
         else:
             g = g[0:1]
         cond[idx : idx + 1] = g.to(device=cond.device, dtype=cond.dtype)
-        # Blend guide into frames surrounding the keyframe (like prop does for first frame).
-        # This gives nearby frames a hint of the edit, helping propagation.
-        g_hw = g.squeeze(0)  # (H, W, C)
-        alpha = 0.8
-        n_blend = min(4, T)
-        for offset in range(1, n_blend + 1):
-            for neighbor in (idx - offset, idx + offset):
-                if 0 <= neighbor < T and neighbor != idx:
-                    cond[neighbor] = alpha * cond[neighbor] + (1.0 - alpha) * g_hw
+        # No blending into neighboring frames — training uses pure source_latent
+        # for all non-keyframe positions, so inference must match exactly.
         cond_for_input = cond
 
     img = prepare_cond_input(task_type, cond_for_input, img, task_mask)
