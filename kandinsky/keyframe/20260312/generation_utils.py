@@ -699,6 +699,15 @@ def generate_unified_sample(
         else:
             g = g[0:1]
         cond[idx : idx + 1] = g.to(device=cond.device, dtype=cond.dtype)
+        # Blend guide into frames surrounding the keyframe (like prop does for first frame).
+        # This gives nearby frames a hint of the edit, helping propagation.
+        g_hw = g.squeeze(0)  # (H, W, C)
+        alpha = 0.8
+        n_blend = min(4, T)
+        for offset in range(1, n_blend + 1):
+            for neighbor in (idx - offset, idx + offset):
+                if 0 <= neighbor < T and neighbor != idx:
+                    cond[neighbor] = alpha * cond[neighbor] + (1.0 - alpha) * g_hw
         cond_for_input = cond
 
     img = prepare_cond_input(task_type, cond_for_input, img, task_mask)
@@ -730,7 +739,7 @@ def generate_unified_sample(
             pass
         _DEBUG_PROP_KEYFRAME_DONE = True
 
-    # Prop: fix first frame to guide image and zero condition at first frame (Lucy-style inference_prop)
+    # Prop: fix first frame to guide image; keep condition (not zeroed) for attention coherence
     prop_first_frame_latent = None
     if task_type == "prop" and guide_latent is not None:
         # img: (bs * duration, H, W, 33) = [noise(16) | cond(16) | mask(1)]
@@ -741,8 +750,8 @@ def generate_unified_sample(
         else:
             g = g[0:1]
         img[0, :, :, 0:16] = g.squeeze(0)
-        img[0, :, :, 16:32] = 0.0
-        # Keep a copy to re-pin first frame every diffusion step (avoids blur/mosaic from denoising)
+        # Keep condition channel as guide_latent (set by prepare_cond_input) — training
+        # uses cond[0] = target_latent (not zeros), so inference should match.
         prop_first_frame_latent = img[0, :, :, 0:16].clone()
 
     # Keyframe: pin the keyframe frame to guide_latent (analogous to prop first-frame pinning)
@@ -756,7 +765,9 @@ def generate_unified_sample(
             g = g[0:1]
         idx = max(0, min(int(keyframe_idx), img.shape[0] - 1))
         img[idx, :, :, 0:16] = g.squeeze(0)
-        img[idx, :, :, 16:32] = 0.0
+        # Keep condition channel as guide_latent (set by prepare_cond_input) — do NOT
+        # zero it out. Training sets cond[keyframe_idx] = target_latent, so inference
+        # must keep guide_latent here for self-attention from other frames to work.
         keyframe_pinned_latent = img[idx, :, :, 0:16].clone()
         keyframe_pin_idx = idx
 
