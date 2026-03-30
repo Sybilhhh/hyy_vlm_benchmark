@@ -268,12 +268,10 @@
   <div class="modal">
     <h2>模型输出目录</h2>
     <p style="font-size:0.72rem;color:#888;margin-bottom:12px;line-height:1.5">
-      只需填写<strong>各模型视频的根目录</strong>。每条样本对应文件名为：若
-      <code>save_name</code> 以 <code>sample_id</code> 为前缀（如
-      <code>AIVD_…_001_idx48.mp4</code>），则使用 <code>&lt;目录&gt;/&lt;save_name&gt;</code>；
-      否则使用 <code>&lt;目录&gt;/&lt;sample_id&gt;.mp4</code>。只要求<strong>文件名以
-      sample_id 开头</strong>，不要求与 save_name 完全一致。无 <code>sample_id</code> 时仅用
-      <code>save_name</code>。
+      只需填写<strong>各模型视频的根目录</strong>。每条样本加载路径为
+      <code>&lt;目录&gt;/&lt;文件名&gt;</code>，其中文件名<strong>优先用 metadata 的
+      <code>save_name</code></strong>；若无 <code>save_name</code> 则用
+      <code>sample_id.mp4</code>。
     </p>
     <div id="dirList"></div>
     <div class="modal-actions">
@@ -520,17 +518,13 @@ function isVideoName(name) {
   return /\.(mp4|webm|mov|mkv)$/i.test(name || '');
 }
 
-/**
- * 多模型列：目录下文件名须以 sample_id 为前缀。
- * 若 save_name 以 sample_id 开头（常见含 _idx 等后缀），则用 save_name 作相对文件名；
- * 否则用 sample_id.mp4。不单独解析 save_name 内部字段，只校验前缀与 sample_id 一致。
- */
+/** 多模型列相对文件名：优先 save_name，否则 sample_id.mp4 */
 function modelOutputFileForItem(it) {
-  const sidStr = it.sample_id != null ? String(it.sample_id).trim() : '';
   const snStr = it.save_name != null ? String(it.save_name).trim() : '';
-  if (sidStr && snStr && snStr.indexOf(sidStr) === 0) return snStr;
+  if (snStr) return snStr;
+  const sidStr = it.sample_id != null ? String(it.sample_id).trim() : '';
   if (sidStr) return isVideoName(sidStr) ? sidStr : sidStr + '.mp4';
-  return snStr;
+  return '';
 }
 
 function fillFilters() {
