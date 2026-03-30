@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Metadata 浏览 · Benchmark</title>
+  <style>
+    :root {
+      --bg: #0f0f0f; --card: #1a1a1a; --bdr: #2a2a2a;
+      --text: #e0e0e0; --dim: #888; --bar: rgba(14,14,14,0.95);
+      --accent: #6c9cff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.45; }
+
+    .sc0 { color: #6c9cff; } .sc1 { color: #ff7c6c; } .sc2 { color: #5de8a0; }
+    .sc3 { color: #f0c05a; } .sc4 { color: #c084fc; } .sc5 { color: #f472b6; }
+
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bar); border-bottom: 1px solid #222;
+      padding: 10px 16px; backdrop-filter: blur(12px);
+    }
+    .topbar h1 { font-size: 0.95rem; font-weight: 700; margin-bottom: 10px; }
+    .filters {
+      display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: flex-end;
+      margin-bottom: 10px;
+    }
+    .fgrp { display: flex; flex-direction: column; gap: 4px; min-width: 140px; }
+    .fgrp label { font-size: 0.65rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.06em; }
+    .fgrp select {
+      font-size: 0.78rem; background: #252525; color: var(--text);
+      border: 1px solid #333; border-radius: 6px; padding: 6px 8px; min-height: 100px;
+      min-width: 180px;
+    }
+    .fgrp select option { padding: 2px; }
+    .ctrl-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    input[type="text"] {
+      font-size: 0.78rem; background: #252525; color: var(--text);
+      border: 1px solid #333; border-radius: 6px; padding: 6px 10px; width: min(360px, 90vw);
+    }
+    button {
+      font-family: inherit; font-size: 0.76rem; font-weight: 600;
+      background: #252525; color: var(--text); border: 1px solid #333;
+      border-radius: 6px; padding: 6px 12px; cursor: pointer;
+    }
+    button:hover { border-color: var(--accent); }
+    button.on { background: var(--accent); color: #000; border-color: var(--accent); }
+    .hint { font-size: 0.68rem; color: #555; margin-top: 6px; }
+
+    .toggle-panel {
+      background: #141414; border: 1px solid var(--bdr); border-radius: 8px;
+      padding: 10px 12px; margin-top: 8px;
+    }
+    .toggle-panel summary {
+      cursor: pointer; font-size: 0.78rem; color: var(--dim); user-select: none;
+    }
+    .toggle-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 6px 12px; margin-top: 10px;
+    }
+    .toggle-grid label {
+      font-size: 0.72rem; display: flex; align-items: center; gap: 6px; cursor: pointer; color: #bbb;
+    }
+    .toggle-grid input { accent-color: var(--accent); }
+
+    .meta-table-toggle {
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--bdr);
+    }
+    .meta-table-toggle label {
+      font-size: 0.76rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      cursor: pointer;
+      color: #ccc;
+      line-height: 1.4;
+    }
+    .meta-table-toggle input { margin-top: 3px; accent-color: var(--accent); }
+    .meta-table-hint {
+      font-size: 0.65rem;
+      color: #666;
+      margin-top: 8px;
+      margin-left: 24px;
+      line-height: 1.45;
+    }
+
+    .src-toggles { display: flex; gap: 4px; flex-wrap: wrap; }
+    .src-btn {
+      font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 5px;
+      background: #252525; border: 1px solid #333; cursor: pointer;
+      letter-spacing: 0.02em;
+    }
+    .src-btn.off { opacity: 0.35; }
+
+    .page-nav {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 8px 16px; border-bottom: 1px solid #222; background: #121212;
+      position: sticky; top: 0; z-index: 90;
+    }
+    .page-dots { display: flex; gap: 4px; flex-wrap: wrap; max-width: 90vw; }
+    .pd {
+      width: 26px; height: 26px; border-radius: 5px; background: #252525;
+      border: 1px solid #333; cursor: pointer; font-size: 0.65rem; font-weight: 700;
+      color: var(--dim);
+    }
+    .pd.cur { background: var(--accent); color: #000; border-color: var(--accent); }
+
+    .main { padding: 16px; max-width: 1800px; margin: 0 auto; }
+
+    .card {
+      background: var(--card); border: 1px solid var(--bdr); border-radius: 10px;
+      margin-bottom: 18px; overflow: hidden;
+    }
+    .card-h {
+      padding: 10px 14px; border-bottom: 1px solid var(--bdr);
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline;
+    }
+    .card-idx { font-size: 0.7rem; color: var(--accent); font-weight: 700; }
+    .card-prompt { font-size: 0.88rem; color: #ccc; flex: 1; min-width: 200px; }
+
+    .meta-table {
+      width: 100%; border-collapse: collapse; font-size: 0.74rem;
+    }
+    .meta-table th, .meta-table td {
+      border: 1px solid var(--bdr); padding: 6px 10px; text-align: left; vertical-align: top;
+    }
+    .meta-table th {
+      width: 160px; background: #111; color: #888; font-weight: 600;
+      white-space: nowrap;
+    }
+    .meta-table td { word-break: break-word; color: #c8c8c8; }
+    .meta-table tr.hidden { display: none; }
+
+    .media-row {
+      display: grid; gap: 0;
+      border-top: 1px solid var(--bdr);
+      background: #0a0a0a;
+    }
+    .media-cell {
+      border-right: 1px solid var(--bdr); padding: 8px;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      min-height: 160px; position: relative;
+    }
+    .media-cell:last-child { border-right: none; }
+    .media-cell .tag {
+      position: absolute; top: 6px; left: 8px; font-size: 0.58rem; font-weight: 700;
+      padding: 2px 6px; border-radius: 3px; background: rgba(0,0,0,0.85);
+      z-index: 2;
+    }
+    .media-cell video { width: 100%; max-height: 360px; border-radius: 4px; }
+    .media-cell img { max-width: 100%; max-height: 320px; border-radius: 4px; object-fit: contain; }
+    .media-cell img.img-bad { min-height: 80px; opacity: 0.4; }
+    .na { color: #555; font-size: 0.8rem; padding: 20px; }
+    .path-note { font-size: 0.62rem; color: #666; margin-top: 6px; word-break: break-all; text-align: center; max-width: 100%; }
+
+    .card-playbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: #141414;
+      border-top: 1px solid var(--bdr);
+    }
+    .card-playbar button { font-size: 0.72rem; }
+
+    .page-playbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-left: 8px;
+      border-left: 1px solid #333;
+      margin-left: 4px;
+    }
+
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      z-index: 200; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #1a1a1a; border: 1px solid #333; border-radius: 12px;
+      padding: 20px; width: 640px; max-width: 92vw; max-height: 85vh; overflow-y: auto;
+    }
+    .modal h2 { font-size: 1rem; margin-bottom: 12px; }
+    .dir-entry { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+    .dir-entry input { flex: 1; font-size: 0.78rem; padding: 6px 8px; }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+    .spacer { flex: 1; }
+
+    #status { font-size: 0.72rem; color: #666; }
+    .kbd-bar { position: fixed; bottom: 10px; right: 12px; font-size: 0.6rem; color: #444; pointer-events: none; }
+    kbd { border: 1px solid #333; padding: 1px 4px; border-radius: 3px; background: #1a1a1a; }
+
+    @media (max-width: 900px) {
+      .media-row { grid-template-columns: 1fr !important; }
+      .media-cell { border-right: none; border-bottom: 1px solid var(--bdr); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Metadata 浏览 <span id="status"></span></h1>
+
+  <div class="filters">
+    <div class="fgrp">
+      <label>修图类型（多选，不选=全部）</label>
+      <select id="fltType" multiple size="6"></select>
+    </div>
+    <div class="fgrp">
+      <label>常用定位</label>
+      <select id="fltLoc" multiple size="6"></select>
+    </div>
+    <div class="fgrp">
+      <label>常用场景</label>
+      <select id="fltScene" multiple size="6"></select>
+    </div>
+    <div class="fgrp" style="min-width:220px">
+      <label>搜索（instruction / instruction_en / sample_id）</label>
+      <input type="text" id="search" placeholder="关键词…" />
+    </div>
+    <div class="ctrl-row">
+      <button type="button" id="bClearFlt">清空筛选</button>
+      <button type="button" id="bDirs">输出目录（多模型）</button>
+      <input type="file" id="jsonFile" accept=".json,application/json" style="display:none" />
+      <button type="button" id="bPickJson" title="在直接打开本地文件时 fetch 会被浏览器拦截，可手动选 metadata.json">选择 metadata.json…</button>
+    </div>
+  </div>
+
+  <details class="toggle-panel" open>
+    <summary>显示选项</summary>
+    <div class="meta-table-toggle">
+      <label>
+        <input type="checkbox" id="chkMetaTable" />
+        显示每条样本的 JSON 元数据表格（全部字段；默认关闭以只看媒体）
+      </label>
+      <p class="meta-table-hint">关闭时仍显示标题行中的中文 instruction；下方勾选项在表格关闭时仅控制对应媒体列是否显示。</p>
+    </div>
+    <div class="toggle-grid" id="fieldToggles"></div>
+  </details>
+
+  <div class="hint">
+    <strong>推荐：</strong>在本目录终端执行
+    <code style="background:#222;padding:2px 6px;border-radius:4px">python3 -m http.server 8765</code>
+    浏览器打开
+    <code style="background:#222;padding:2px 6px;border-radius:4px">http://127.0.0.1:8765/vis_metadata.html</code>。
+    若用「文件」方式双击打开 HTML（地址栏是 <code>file:///...</code>），浏览器会禁止 <code>fetch</code> 读同目录 JSON，需点上方「选择 metadata.json」或改用 HTTP。
+  </div>
+</div>
+
+<div class="page-nav">
+  <button type="button" onclick="goPage(-1)">&#9664; 上一页</button>
+  <div class="page-dots" id="pageDots"></div>
+  <button type="button" onclick="goPage(1)">下一页 &#9654;</button>
+  <div class="page-playbar">
+    <button type="button" id="bPlayPageAll" title="播放当前页所有视频">本页全部播放</button>
+  </div>
+  <span class="spacer"></span>
+  <span id="cnt" style="font-size:0.72rem;color:#666"></span>
+</div>
+
+<div class="main" id="main"></div>
+
+<div class="modal-overlay" id="dirModal">
+  <div class="modal">
+    <h2>模型输出目录</h2>
+    <p style="font-size:0.72rem;color:#888;margin-bottom:12px;line-height:1.5">
+      只需填写<strong>各模型视频的根目录</strong>。每条样本对应文件名为：若
+      <code>save_name</code> 以 <code>sample_id</code> 为前缀（如
+      <code>AIVD_…_001_idx48.mp4</code>），则使用 <code>&lt;目录&gt;/&lt;save_name&gt;</code>；
+      否则使用 <code>&lt;目录&gt;/&lt;sample_id&gt;.mp4</code>。只要求<strong>文件名以
+      sample_id 开头</strong>，不要求与 save_name 完全一致。无 <code>sample_id</code> 时仅用
+      <code>save_name</code>。
+    </p>
+    <div id="dirList"></div>
+    <div class="modal-actions">
+      <button type="button" class="add-dir-btn" onclick="addDirEntry()">+ 添加目录</button>
+      <div class="spacer"></div>
+      <button type="button" onclick="closeDirModal()">取消</button>
+      <button type="button" class="on" onclick="saveDirs()">保存并应用</button>
+    </div>
+  </div>
+</div>
+
+<div class="kbd-bar"><kbd>←</kbd><kbd>→</kbd> 翻页</div>
+
+<script>
+const METADATA_URL = 'metadata.json';
+const STORAGE_KEY = 'vis_metadata_output_dirs';
+const STORAGE_FIELDS = 'vis_metadata_field_toggles';
+const STORAGE_META_TABLE = 'vis_metadata_show_meta_table';
+const PER_PAGE = 8;
+
+const COLORS = ['sc0','sc1','sc2','sc3','sc4','sc5'];
+
+/** 与 JSON 中字段一致；顺序即展示顺序 */
+const META_KEYS = [
+  'sample_id',
+  'video_path',
+  'source_image_original',
+  'source_image',
+  'edited_first_frame_path',
+  'instruction',
+  'instruction_en',
+  '修图类型',
+  '常用定位',
+  '常用场景',
+  '常用属性',
+  '多指令',
+  '是否有原视频',
+  '是否有关键帧',
+  'idx_original',
+  'frame_idx',
+  'save_name',
+];
+
+/** 默认可关掉的「次要」字段；核心分类仍可通过顶栏筛选 */
+const DEFAULT_OPTIONAL = {
+  sample_id: true,
+  video_path: true,
+  source_image_original: true,
+  source_image: true,
+  edited_first_frame_path: true,
+  idx_original: true,
+  frame_idx: true,
+};
+
+let items = [];
+let filtered = [];
+let page = 0;
+let outputDirs = []; // { label, path }
+let fieldShow = { ...DEFAULT_OPTIONAL };
+/** 是否展示每条样本下方的 JSON 字段表格 */
+let showMetaTable = false;
+
+function loadShowMetaTable() {
+  try {
+    const v = localStorage.getItem(STORAGE_META_TABLE);
+    if (v === '1') return true;
+    if (v === '0') return false;
+  } catch (e) {}
+  return false;
+}
+
+function saveShowMetaTable() {
+  try { localStorage.setItem(STORAGE_META_TABLE, showMetaTable ? '1' : '0'); } catch (e) {}
+}
+
+function playRowVideos(btn) {
+  const card = btn.closest('.card');
+  if (!card) return;
+  card.querySelectorAll('video').forEach(function (v) {
+    v.play().catch(function () {});
+  });
+}
+
+function playPageAllVideos() {
+  const main = document.getElementById('main');
+  if (!main) return;
+  main.querySelectorAll('video').forEach(function (v) {
+    v.play().catch(function () {});
+  });
+}
+
+function esc(s) {
+  if (s === null || s === undefined) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function normVal(v) {
+  if (v === null || v === undefined || v === '') return '(空)';
+  return String(v);
+}
+
+function loadFieldToggles() {
+  try {
+    const raw = localStorage.getItem(STORAGE_FIELDS);
+    if (raw) {
+      const o = JSON.parse(raw);
+      if (o && typeof o === 'object') fieldShow = { ...DEFAULT_OPTIONAL, ...o };
+    }
+  } catch (e) {}
+}
+
+function saveFieldToggles() {
+  try { localStorage.setItem(STORAGE_FIELDS, JSON.stringify(fieldShow)); } catch (e) {}
+}
+
+function buildFieldToggleUI() {
+  const el = document.getElementById('fieldToggles');
+  const labels = {
+    sample_id: 'sample_id',
+    video_path: 'video_path',
+    source_image_original: 'source_image_original（路径行 + 预览图列）',
+    source_image: 'source_image（路径行 + 预览图列）',
+    edited_first_frame_path: 'edited_first_frame_path（路径行 + 预览图列）',
+    idx_original: 'idx_original',
+    frame_idx: 'frame_idx',
+  };
+  let h = '';
+  for (const k of Object.keys(labels)) {
+    const checked = fieldShow[k] !== false;
+    h += `<label><input type="checkbox" data-k="${esc(k)}" ${checked ? 'checked' : ''}/> ${labels[k]}</label>`;
+  }
+  h += '<label style="opacity:0.6"><input type="checkbox" checked disabled/> 若开启「元数据表格」，instruction / 修图类型等未列在上方者会在表格中显示</label>';
+  el.innerHTML = h;
+  el.querySelectorAll('input[data-k]').forEach(function (inp) {
+    inp.addEventListener('change', function () {
+      fieldShow[inp.getAttribute('data-k')] = inp.checked;
+      saveFieldToggles();
+      render();
+    });
+  });
+}
+
+function defaultOutputDirs() {
+  return [
+    { label: 'output', path: 'output' },
+  ];
+}
+
+function loadDirs() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const a = JSON.parse(raw);
+      if (Array.isArray(a) && a.length && a[0].label && a[0].path) return a;
+    }
+  } catch (e) {}
+  return defaultOutputDirs();
+}
+
+function saveDirsToStorage() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(outputDirs)); } catch (e) {}
+}
+
+let dirModalEntries = [];
+
+function openDirModal() {
+  dirModalEntries = outputDirs.map(function (d) { return { label: d.label, path: d.path }; });
+  renderDirList();
+  document.getElementById('dirModal').classList.add('open');
+}
+
+function closeDirModal() {
+  document.getElementById('dirModal').classList.remove('open');
+}
+
+function addDirEntry() {
+  dirModalEntries.push({ label: '', path: '' });
+  renderDirList();
+}
+
+function removeDirEntry(i) {
+  dirModalEntries.splice(i, 1);
+  renderDirList();
+}
+
+function renderDirList() {
+  const c = document.getElementById('dirList');
+  let h = '';
+  for (let i = 0; i < dirModalEntries.length; i++) {
+    const e = dirModalEntries[i];
+    h += '<div class="dir-entry">';
+    h += `<input type="text" placeholder="显示名" value="${esc(e.label)}" data-i="${i}" data-f="label"/>`;
+    h += `<input type="text" placeholder="相对路径，如 output/model_a" value="${esc(e.path)}" data-i="${i}" data-f="path"/>`;
+    h += `<button type="button" onclick="removeDirEntry(${i})">删除</button>`;
+    h += '</div>';
+  }
+  if (!dirModalEntries.length) {
+    h = '<div style="color:#666;font-size:0.8rem">点击「添加目录」增加多列输出。</div>';
+  }
+  c.innerHTML = h;
+  c.querySelectorAll('input[data-i]').forEach(function (inp) {
+    inp.addEventListener('input', function () {
+      const i = +inp.getAttribute('data-i');
+      const f = inp.getAttribute('data-f');
+      dirModalEntries[i][f] = inp.value;
+    });
+  });
+}
+
+function saveDirs() {
+  const valid = [];
+  for (let i = 0; i < dirModalEntries.length; i++) {
+    const label = dirModalEntries[i].label.trim();
+    const path = dirModalEntries[i].path.trim();
+    if (label && path) valid.push({ label: label, path: path });
+  }
+  if (!valid.length) {
+    alert('至少保留一个有效目录（标签 + 路径）');
+    return;
+  }
+  outputDirs = valid;
+  saveDirsToStorage();
+  closeDirModal();
+  render();
+}
+
+function mediaUrl(rel) {
+  if (!rel) return '';
+  const p = rel.replace(/^\.\//, '');
+  return encodeURI(p.split('/').map(encodeURIComponent).join('/'));
+}
+
+function joinPath(base, name) {
+  if (!base) return name;
+  const b = base.replace(/\/+$/, '');
+  return b + '/' + name;
+}
+
+function isVideoName(name) {
+  return /\.(mp4|webm|mov|mkv)$/i.test(name || '');
+}
+
+/**
+ * 多模型列：目录下文件名须以 sample_id 为前缀。
+ * 若 save_name 以 sample_id 开头（常见含 _idx 等后缀），则用 save_name 作相对文件名；
+ * 否则用 sample_id.mp4。不单独解析 save_name 内部字段，只校验前缀与 sample_id 一致。
+ */
+function modelOutputFileForItem(it) {
+  const sidStr = it.sample_id != null ? String(it.sample_id).trim() : '';
+  const snStr = it.save_name != null ? String(it.save_name).trim() : '';
+  if (sidStr && snStr && snStr.indexOf(sidStr) === 0) return snStr;
+  if (sidStr) return isVideoName(sidStr) ? sidStr : sidStr + '.mp4';
+  return snStr;
+}
+
+function fillFilters() {
+  const st = new Set();
+  const sl = new Set();
+  const sc = new Set();
+  items.forEach(function (it) {
+    st.add(normVal(it['修图类型']));
+    sl.add(normVal(it['常用定位']));
+    sc.add(normVal(it['常用场景']));
+  });
+  function fillSelect(id, set) {
+    const sel = document.getElementById(id);
+    const arr = Array.from(set).sort();
+    sel.innerHTML = arr.map(function (v) {
+      return '<option value="' + esc(v) + '">' + esc(v) + '</option>';
+    }).join('');
+  }
+  fillSelect('fltType', st);
+  fillSelect('fltLoc', sl);
+  fillSelect('fltScene', sc);
+}
+
+function selectedValues(id) {
+  const sel = document.getElementById(id);
+  const out = [];
+  for (let i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].selected) out.push(sel.options[i].value);
+  }
+  return out;
+}
+
+function applyFilter() {
+  const t = selectedValues('fltType');
+  const l = selectedValues('fltLoc');
+  const s = selectedValues('fltScene');
+  const q = document.getElementById('search').value.trim().toLowerCase();
+
+  filtered = [];
+  for (let i = 0; i < items.length; i++) {
+    const it = items[i];
+    if (t.length && t.indexOf(normVal(it['修图类型'])) === -1) continue;
+    if (l.length && l.indexOf(normVal(it['常用定位'])) === -1) continue;
+    if (s.length && s.indexOf(normVal(it['常用场景'])) === -1) continue;
+    if (q) {
+      const blob = [
+        it.instruction, it.instruction_en, it.sample_id, it.save_name,
+      ].filter(Boolean).join(' ').toLowerCase();
+      if (blob.indexOf(q) === -1) continue;
+    }
+    filtered.push(i);
+  }
+  if (page >= totalPages()) page = Math.max(0, totalPages() - 1);
+}
+
+function totalPages() {
+  return Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+}
+
+function goPage(d) {
+  page += d;
+  if (page < 0) page = totalPages() - 1;
+  if (page >= totalPages()) page = 0;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function jumpPage(p) {
+  page = p;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderPageDots() {
+  const c = document.getElementById('pageDots');
+  const tp = totalPages();
+  let h = '';
+  for (let p = 0; p < tp; p++) {
+    h += '<button type="button" class="pd' + (p === page ? ' cur' : '') + '" onclick="jumpPage(' + p + ')">' + (p + 1) + '</button>';
+  }
+  c.innerHTML = h;
+}
+
+function rowHiddenKey(key) {
+  if (fieldShow[key] === false) return true;
+  return false;
+}
+
+function renderMetaRows(it) {
+  let h = '<table class="meta-table">';
+  for (let ki = 0; ki < META_KEYS.length; ki++) {
+    const key = META_KEYS[ki];
+    if (Object.prototype.hasOwnProperty.call(DEFAULT_OPTIONAL, key) && rowHiddenKey(key)) continue;
+    const val = it[key];
+    const display = val === null || val === undefined ? '<span style="color:#555">null</span>' : esc(String(val));
+    h += '<tr><th>' + esc(key) + '</th><td>' + display + '</td></tr>';
+  }
+  h += '</table>';
+  return h;
+}
+
+function renderMediaGrid(it) {
+  const modelFile = modelOutputFileForItem(it);
+  const cols = [];
+
+  if (!rowHiddenKey('video_path') && it.video_path) {
+    cols.push({ tag: 'input_video', type: 'video', src: it.video_path, sc: 0 });
+  }
+  if (!rowHiddenKey('source_image_original') && it.source_image_original) {
+    cols.push({ tag: 'source_image_original', type: 'img', src: it.source_image_original, sc: 1 });
+  }
+  if (!rowHiddenKey('source_image') && it.source_image) {
+    cols.push({ tag: 'source_image', type: 'img', src: it.source_image, sc: 2 });
+  }
+  if (!rowHiddenKey('edited_first_frame_path') && it.edited_first_frame_path) {
+    cols.push({ tag: 'edited_first_frame', type: 'img', src: it.edited_first_frame_path, sc: 3 });
+  }
+
+  for (let j = 0; j < outputDirs.length; j++) {
+    const od = outputDirs[j];
+    const url = joinPath(od.path, modelFile);
+    cols.push({
+      tag: od.label,
+      type: isVideoName(modelFile) ? 'video' : 'img',
+      src: url,
+      sc: (j + 4) % 6,
+    });
+  }
+
+  const n = cols.length || 1;
+  let h = '<div class="media-row" style="grid-template-columns:repeat(' + n + ',minmax(120px,1fr))">';
+  for (let i = 0; i < cols.length; i++) {
+    const c = cols[i];
+    const sc = COLORS[c.sc % COLORS.length];
+    h += '<div class="media-cell">';
+    h += '<span class="tag ' + sc + '">' + esc(c.tag) + '</span>';
+    const u = mediaUrl(c.src);
+    if (c.type === 'video') {
+      h += '<video src="' + esc(u) + '" controls loop preload="metadata" playsinline></video>';
+    } else {
+      h += '<img src="' + esc(u) + '" alt="" loading="lazy" onerror="this.classList.add(\'img-bad\');this.alt=\'加载失败\';"/>';
+    }
+    h += '<div class="path-note">' + esc(c.src) + '</div>';
+    h += '</div>';
+  }
+  if (!cols.length) {
+    h += '<div class="media-cell"><div class="na">无媒体列（请打开显示字段或配置输出目录）</div></div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+function render() {
+  applyFilter();
+  const c = document.getElementById('main');
+  const start = page * PER_PAGE;
+  const slice = filtered.slice(start, start + PER_PAGE);
+
+  let html = '';
+  for (let si = 0; si < slice.length; si++) {
+    const idx = slice[si];
+    const it = items[idx];
+    html += '<article class="card">';
+    html += '<div class="card-h">';
+    html += '<span class="card-idx">#' + idx + '</span>';
+    html += '<div class="card-prompt"><strong>CN</strong> ' + esc(it.instruction) + '</div>';
+    html += '</div>';
+    if (showMetaTable) html += renderMetaRows(it);
+    html += renderMediaGrid(it);
+    html += '<div class="card-playbar"><button type="button" onclick="playRowVideos(this)">本样本全部播放</button></div>';
+    html += '</article>';
+  }
+
+  c.innerHTML = html || '<p style="color:#666;padding:20px">没有匹配的条目。</p>';
+
+  document.getElementById('cnt').textContent = filtered.length + ' / ' + items.length + ' 条';
+  renderPageDots();
+}
+
+function showLoadError(err) {
+  document.getElementById('status').textContent = '未加载';
+  document.getElementById('main').innerHTML =
+    '<div style="padding:20px 24px;max-width:720px;line-height:1.6">' +
+    '<p style="color:#f88;margin-bottom:12px">无法自动加载 metadata.json：' + esc(err.message) + '</p>' +
+    '<p style="color:#aaa;font-size:0.88rem;margin-bottom:0.6em"><strong>原因：</strong>若地址栏是 <code>file:///...</code>（双击打开 HTML），浏览器会拦截 <code>fetch</code> 读取本地 JSON。</p>' +
+    '<p style="color:#aaa;font-size:0.88rem;margin-bottom:12px"><strong>做法一（推荐）：</strong>在本目录执行 <code style="background:#222;padding:2px 6px;border-radius:4px">python3 -m http.server 8765</code>，再打开 <code style="background:#222;padding:2px 6px;border-radius:4px">http://127.0.0.1:8765/vis_metadata.html</code></p>' +
+    '<p style="color:#aaa;font-size:0.88rem;margin-bottom:12px"><strong>做法二：</strong>点击顶部「选择 metadata.json」手动选择文件。</p>' +
+    '</div>';
+}
+
+function applyJsonData(data) {
+  if (!Array.isArray(data)) throw new Error('metadata 应为 JSON 数组');
+  items = data;
+  document.getElementById('status').textContent = items.length + ' cases';
+  fillFilters();
+  page = 0;
+  render();
+}
+
+let uiBound = false;
+
+function bindUiOnce() {
+  if (uiBound) return;
+  uiBound = true;
+  document.getElementById('search').oninput = function () { page = 0; render(); };
+  ['fltType', 'fltLoc', 'fltScene'].forEach(function (id) {
+    document.getElementById(id).addEventListener('change', function () { page = 0; render(); });
+  });
+  document.getElementById('bClearFlt').onclick = function () {
+    ['fltType', 'fltLoc', 'fltScene'].forEach(function (id) {
+      const sel = document.getElementById(id);
+      for (let i = 0; i < sel.options.length; i++) sel.options[i].selected = false;
+    });
+    document.getElementById('search').value = '';
+    page = 0;
+    render();
+  };
+  document.getElementById('bDirs').onclick = openDirModal;
+  document.getElementById('bPickJson').onclick = function () {
+    document.getElementById('jsonFile').click();
+  };
+  document.getElementById('jsonFile').onchange = function (ev) {
+    const f = ev.target.files && ev.target.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = function () {
+      try {
+        const data = JSON.parse(reader.result);
+        applyJsonData(data);
+      } catch (e2) {
+        showLoadError(e2 instanceof Error ? e2 : new Error(String(e2)));
+      }
+    };
+    reader.onerror = function () {
+      showLoadError(new Error('读取文件失败'));
+    };
+    reader.readAsText(f, 'utf-8');
+    ev.target.value = '';
+  };
+  document.getElementById('dirModal').addEventListener('click', function (e) {
+    if (e.target === this) closeDirModal();
+  });
+  document.getElementById('bPlayPageAll').addEventListener('click', playPageAllVideos);
+  var chkMeta = document.getElementById('chkMetaTable');
+  if (chkMeta) {
+    chkMeta.checked = showMetaTable;
+    chkMeta.addEventListener('change', function () {
+      showMetaTable = chkMeta.checked;
+      saveShowMetaTable();
+      render();
+    });
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'Escape') closeDirModal();
+    if (e.key === 'ArrowLeft') { e.preventDefault(); goPage(-1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); goPage(1); }
+  });
+}
+
+async function boot() {
+  showMetaTable = loadShowMetaTable();
+  loadFieldToggles();
+  buildFieldToggleUI();
+  outputDirs = loadDirs();
+  bindUiOnce();
+  document.getElementById('status').textContent = '加载中…';
+
+  try {
+    const res = await fetch(METADATA_URL);
+    if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
+    const data = await res.json();
+    applyJsonData(data);
+  } catch (e) {
+    showLoadError(e);
+    return;
+  }
+}
+
+boot();
+</script>
+</body>
+</html>
