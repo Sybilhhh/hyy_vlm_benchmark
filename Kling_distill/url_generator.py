@@ -3,6 +3,9 @@
 '''
 ```bash
 python3 KlingO1-edit.py --json 版本测试集_bench_missing112.json --input_dir 原始视频 --out_dir output_missing112 >> output_missing112.log 2>&1
+
+
+
 '''
 
 import os
